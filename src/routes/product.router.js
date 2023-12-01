@@ -43,6 +43,8 @@ Prouter.post('/', async (req, res) => {
             thumbnails
         };
         await productManager.addProduct(productData);
+        const io = req.app.get("io");
+        io.emit("updateProducts");
         return res.status(201).json({ status: "ok", message: "Producto agregado con éxito." });
     } catch (error) {
         console.error(error);
@@ -57,6 +59,8 @@ Prouter.put('/:pid', async (req, res) => {
             return res.status(400).json({ status: "error", message: "Debe proporcionar al menos un campo para actualizar." });
         }
         await productManager.updateProducts(productId, updatedProductData);
+        const io = req.app.get("io");
+        io.emit("updateProducts")
         return res.status(200).json({ status: "ok", message: "Producto actualizado con éxito." });
     } catch (error) {
         console.error(error);
@@ -67,6 +71,8 @@ Prouter.delete('/:pid', async (req, res) => {
     try {
         const productId = parseInt(req.params.pid);
         const result = await productManager.deleteProducts(productId);
+        const io = req.app.get("io");
+        io.emit("updateProducts");
         return res.status(200).json(result);
     } catch (error) {
         console.error(error);

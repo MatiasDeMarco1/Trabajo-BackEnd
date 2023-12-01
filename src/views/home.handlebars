@@ -1,0 +1,16 @@
+
+<h1>Bienvenido</h1>
+
+<ul id="allProductList">
+    {{#each products}}
+        <li>
+            <strong>{{title}}</strong>
+            <p>{{description}}</p>
+            <p>Precio: {{price}}</p>
+            <p>Stock: {{stock}}</p>
+            <!-- Agrega más campos según sea necesario -->
+        </li>
+    {{/each}}
+</ul>
+
+<p>Ir a la <a href="/realtimeproducts">lista en tiempo real</a></p>

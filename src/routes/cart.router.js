@@ -27,7 +27,6 @@ Crouter.post('/', async (req, res) => {
             return res.status(201).json({ status: 'ok', message: 'Carrito creado con éxito', data: newCart });
         } catch (error) {
             console.error(error);
-            // Manejo del error al escribir el archivo
             return res.status(500).json({ status: 'error', message: 'Error interno del servidor al escribir el archivo Cart.json.' });
         }
     } catch (error) {
@@ -43,9 +42,6 @@ Crouter.post('/:cid/product/:pid', async (req, res) => {
         const productId = parseInt(req.params.pid);
         const cartsFilePath = path.join(__dirname, '../', 'Cart.json');
         const productsFilePath = path.join(__dirname, '../', 'Products.json');
-        console.log('Ruta del archivo Cart.json:', cartsFilePath);
-        console.log('Ruta del archivo Products.json:', productsFilePath);
-
         try {
             await fs.access(cartsFilePath);
             await fs.access(productsFilePath);
