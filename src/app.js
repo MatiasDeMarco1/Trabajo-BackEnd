@@ -29,7 +29,7 @@ app.use(express.static('public'));
 
 app.set("io", io);
 
-app.get("/", (req, res) => {
+app.get("/home", (req, res) => {
     try {
         const productsData = fs.readFileSync("Products.json", "utf-8");
         const products = JSON.parse(productsData);
