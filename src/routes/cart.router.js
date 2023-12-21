@@ -2,8 +2,11 @@ const { Router } = require("express")
 const Crouter = Router()
 const path = require('path');
 const fs = require('fs').promises;
+const Cart = require('../mongo/models/Carts');
+const Product = require('../mongo/models/Product');
 
-Crouter.post('/', async (req, res) => {
+
+/* Crouter.post('/', async (req, res) => {
     try {
         let cartsContent = [];
         const cartsFilePath = path.join(__dirname, "../",'Cart.json');
@@ -106,5 +109,70 @@ Crouter.get('/:cid', async (req, res) => {
         console.error(error);
         res.status(500).json({ status: 'error', message: 'Error interno del servidor.' });
     }
+}); */
+
+
+
+Crouter.post('/', async (req, res) => {
+    try {
+        const newCart = await Cart.create({ products: [] });
+        return res.status(201).json({ status: 'ok', message: 'Carrito creado con éxito', data: newCart });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: 'error', message: 'Error interno del servidor.' });
+    }
 });
+
+Crouter.post('/:cid/product/:pid', async (req, res) => {
+    try {
+        const cartId = req.params.cid;
+        const productId = req.params.pid;
+
+        const cart = await Cart.findById(cartId);
+
+        if (!cart) {
+            return res.status(404).json({ status: 'error', message: `Carrito con ID ${cartId} no encontrado.` });
+        }
+
+        const product = await Product.findById(productId);
+
+        if (!product) {
+            return res.status(404).json({ status: 'error', message: `Producto con ID ${productId} no encontrado en Products.` });
+        }
+
+        const productIndex = cart.products.findIndex((item) => item.product.toString() === productId);
+
+        if (productIndex !== -1) {
+            cart.products[productIndex].quantity += 1;
+        } else {
+            cart.products.push({
+                product: productId,
+                quantity: 1
+            });
+        }
+
+        await cart.save();
+        return res.status(200).json({ status: 'ok', message: 'Producto agregado al carrito con éxito.', data: cart });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ status: 'error', message: 'Error interno del servidor.' });
+    }
+});
+
+Crouter.get('/:cid', async (req, res) => {
+    try {
+        const cartId = req.params.cid;
+        const cart = await Cart.findById(cartId);
+
+        if (!cart) {
+            return res.status(404).json({ status: 'error', message: `Carrito con ID ${cartId} no encontrado.` });
+        }
+
+        return res.status(200).json({ status: 'ok', data: cart.products });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: 'error', message: 'Error interno del servidor.' });
+    }
+});
+
 module.exports = Crouter

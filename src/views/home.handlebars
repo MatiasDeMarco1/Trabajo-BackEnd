@@ -1,15 +1,14 @@
 
 <h1>Bienvenido</h1>
 
-<ul id="allProductList">
+<ul>
     {{#each products}}
         <li>
-            <strong>{{title}}</strong>
-            <p>{{description}}</p>
-            <p>Precio: {{price}}</p>
-            <p>Stock: {{stock}}</p>
+            <h2>{{this._doc.title}}</h2>
+            <p>{{this._doc.description}}</p>
+            <p>Precio: {{this._doc.price}}</p>
+            <p>Stock: {{this._doc.stock}}</p>
         </li>
     {{/each}}
 </ul>
-
-<p>Ir a la <a href="/realtimeproducts">lista en tiempo real</a></p>
+<p>Ir a la <a href="/realtimeproducts">lista en tiempo real</a></p> 
