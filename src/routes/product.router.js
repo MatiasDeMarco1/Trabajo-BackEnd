@@ -144,7 +144,7 @@ Prouter.put('/:pid', async (req, res) => {
         }
         const updatedProduct = await Product.findByIdAndUpdate(productId, updatedProductData, { new: true });
         const io = req.app.get("io");
-        io.emit("updateProducts");
+        io.emit("updateProducts", await Product.find());
         return res.status(200).json({ status: "ok", message: "Producto actualizado con éxito.", data: updatedProduct });
     } catch (error) {
         console.error(error);
