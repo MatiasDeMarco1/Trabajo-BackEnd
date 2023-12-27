@@ -1,0 +1,12 @@
+<h1>Detalle del Carrito</h1>
+
+    <ul>
+        {{#each productsInfo}}
+            <li>
+                <h3>{{name}}</h3>
+                <p>{{description}}</p>
+                <p>Precio: {{price}}</p>
+                <p>Cantidad: {{quantity}}</p>
+            </li>
+        {{/each}}
+    </ul>

@@ -1,0 +1,10 @@
+    <h1>Listado de Productos</h1>
+
+    {{#each products}}
+        <div>
+            <h3>{{this._doc.title}}</h3>
+            <p>{{this._doc.description}}</p>
+            <p>Precio: {{this._doc.price}}</p>
+            <button onclick="addToCart('{{_id}}')">Agregar al carrito</button>
+        </div>
+    {{/each}}

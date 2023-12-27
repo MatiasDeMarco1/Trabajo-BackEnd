@@ -84,14 +84,38 @@ Prouter.delete('/:pid', async (req, res) => {
 }) */
 Prouter.get("/", async (req, res) => {
     try {
-        const { limit } = req.query;
-        const products = await Product.find().limit(parseInt(limit) || 0);
-        return res.status(200).json({ status: "ok", data: products });
+        const { page = 1, limit = 10 } = req.query;
+        const pageValue = parseInt(page);
+        const limitValue = parseInt(limit);
+        const totalProducts = await Product.countDocuments();
+        const totalPages = Math.ceil(totalProducts / limitValue);
+        const products = await Product.find()
+            .limit(limitValue)
+            .skip((pageValue - 1) * limitValue)
+            .sort({ price: 1 });
+        const hasPrevPage = pageValue > 1;
+        const hasNextPage = pageValue < totalPages;
+        const prevLink = hasPrevPage ? `/products?page=${pageValue - 1}&limit=${limitValue}` : null;
+        const nextLink = hasNextPage ? `/products?page=${pageValue + 1}&limit=${limitValue}` : null;
+        const result = {
+            status: "success",
+            payload: products,
+            totalPage: totalPages,
+            prevpage: hasPrevPage ? pageValue - 1 : null,
+            nextPage: hasNextPage ? pageValue + 1 : null,
+            page: pageValue,
+            hasprevpage: hasPrevPage,
+            hasnextpage: hasNextPage,
+            prevLink: prevLink,
+            nextLink: nextLink
+        };
+        console.log(result);
+        res.render("product", { products });
     } catch (error) {
-        res.status(500).json({ status: "error", message: "Error" });
+        console.error(error);
+        res.status(500).json({ status: "error", message: "Error interno del servidor." });
     }
 });
-
 Prouter.get('/:pid', async (req, res) => {
     try {
         const productId = req.params.pid; 
