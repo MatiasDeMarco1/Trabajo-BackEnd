@@ -5,6 +5,6 @@
             <h3>{{this._doc.title}}</h3>
             <p>{{this._doc.description}}</p>
             <p>Precio: {{this._doc.price}}</p>
-            <button onclick="addToCart('{{_id}}')">Agregar al carrito</button>
+            <button onclick="addToCart('{{this._doc._id}}')">Agregar al carrito</button>
         </div>
     {{/each}}
