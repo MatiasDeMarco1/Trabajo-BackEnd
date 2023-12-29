@@ -162,21 +162,21 @@ Crouter.post('/:cid/product/:pid', async (req, res) => {
 Crouter.get('/:cid', async (req, res) => {
     try {
         const cartId = req.params.cid;
-        const cart = await Cart.findById(cartId).populate({
-            path: 'products.product',
-            model: 'Product'
-        });
+        const cart = await Cart.findById(cartId);
 
         if (!cart) {
             return res.status(404).json({ status: 'error', message: `Carrito con ID ${cartId} no encontrado.` });
         }
 
-        const productsInfo = cart.products.map(item => ({
-            productId: item.product._id,
-            name: item.product.name,
-            description: item.product.description,
-            price: item.product.price,
-            quantity: item.quantity
+        const productsInfo = await Promise.all(cart.products.map(async (item) => {
+            const product = await Product.findById(item.product);
+            return {
+                productId: product._id,
+                name: product.name,
+                description: product.description,
+                price: product.price,
+                quantity: item.quantity
+            };
         }));
 
         res.render('cart', { productsInfo });
@@ -184,7 +184,7 @@ Crouter.get('/:cid', async (req, res) => {
         console.error(error);
         res.status(500).json({ status: 'error', message: 'Error interno del servidor.' });
     }
-})
+});
 Crouter.delete('/:cid/products/:pid', async (req, res) => {
     try {
         const cartId = req.params.cid;
