@@ -84,6 +84,7 @@ Prouter.delete('/:pid', async (req, res) => {
 }) */
 Prouter.get("/", async (req, res) => {
     try {
+        const user = req.session.user;
         const { page = 1, limit = 10 } = req.query;
         const pageValue = parseInt(page);
         const limitValue = parseInt(limit);
@@ -110,7 +111,7 @@ Prouter.get("/", async (req, res) => {
             nextLink: nextLink
         };
         console.log(result);
-        res.render("product", { products });
+        res.render("product", { products, user });
     } catch (error) {
         console.error(error);
         res.status(500).json({ status: "error", message: "Error interno del servidor." });

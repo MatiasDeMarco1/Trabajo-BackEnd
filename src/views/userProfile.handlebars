@@ -1,0 +1,13 @@
+<h1>Perfil de Usuario</h1>
+
+{{#if user}}
+    <p>Nombre: {{user.first_name}}</p>
+    <p>Correo electrónico: {{user.email}}</p>
+    <p>Rol: {{user.role}}</p>
+    <form action="/api/sessions/logout">
+        <button type="submit">Cerrar Sesión</button>
+    </form>
+{{else}}
+    <p>No has iniciado sesión.</p>
+    <p><a href="/login">Inicia sesión</a> para ver tu perfil.</p>
+{{/if}}

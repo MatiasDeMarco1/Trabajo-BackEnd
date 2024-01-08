@@ -1,5 +1,9 @@
     <h1>Listado de Productos</h1>
-
+    {{#if user}}
+        <h2>Bienvenido, {{user.first_name}}! para ver todos tus datos o cerrar sesion ingresa <a href="/userProfile">aqui!</a></h2>
+    {{else}}
+            <h2>Inicia sesion, para recomerdarte lo mejor para vos! <a href="/login">Iniciar Sesion</a></h2>
+    {{/if}}
     {{#each products}}
         <div>
             <h3>{{this._doc.title}}</h3>
