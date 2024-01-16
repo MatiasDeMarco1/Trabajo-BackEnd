@@ -84,7 +84,7 @@ Prouter.delete('/:pid', async (req, res) => {
 }) */
 Prouter.get("/", async (req, res) => {
     try {
-        const user = req.session.user;
+        const user = req.user;
         const { page = 1, limit = 10 } = req.query;
         const pageValue = parseInt(page);
         const limitValue = parseInt(limit);

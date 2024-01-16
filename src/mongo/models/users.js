@@ -9,7 +9,6 @@ const usersSchema = Schema({
         index: true,
         required: true
     },
-    last_name: String,
     email: {
         type: String,
         index: true,
