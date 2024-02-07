@@ -10,12 +10,14 @@ const MongoStore = require("connect-mongo")
 const bodyParser = require('body-parser')
 const bcrypt = require('bcrypt');
 const passport = require('passport');
-const { initializePassportGitHub, initializePassportLocal } = require('./Config/passport.config')
 const User = require('./mongo/models/users');
-
+const sessionController = require('./Controllers/sessioncontroller');
+const config = require('./Config/config.js');
 
 const app = express();
-const port = 8080;
+const PORT = config.PORT
+const MONGO_URL = config.MONGO_URL
+const SESSION_SECRET = config.SESSION_SECRET
 
 const serverHTTP = http.createServer(app);
 const io = socketIO(serverHTTP);
@@ -25,25 +27,6 @@ const cartsRouter = require("./routes/cart.router.js");
 const sessionRouter = require("./routes/session.router.js");
 const viewRouter = require("./routes/view.router.js");
 
-
-
-// local github
-initializePassportLocal()
-initializePassportGitHub()
-
-
-passport.serializeUser((user, done) => {
-    done(null, user.id);
-});
-
-passport.deserializeUser(async (id, done) => {
-    try {
-        const user = await User.findById(id);
-        done(null, user);
-    } catch (error) {
-        done(error);
-    }
-});
 
 const hbs = exphbs.create({
     extname: '.handlebars',
@@ -63,14 +46,14 @@ app.use(passport.initialize());
 
 app.use(session({
     store: MongoStore.create({
-        mongoUrl: 'mongodb+srv://Matias25:19742013Nob@cluster0.yfm42kk.mongodb.net/Ecomerce', 
+        mongoUrl:MONGO_URL , 
         mongoOptions: {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         },
         ttl: 15000000000,
     }),
-    secret: 'secretKey',
+    secret:SESSION_SECRET,
     resave: false, 
     saveUninitialized: false
 }))
@@ -78,6 +61,8 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+sessionController;
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/products', productRouter);
@@ -86,35 +71,6 @@ app.use("/api/carts", cartsRouter);
 app.use('/api/sessions', sessionRouter);
 app.use('/', viewRouter);
 app.use(bodyParser.urlencoded({ extended: true }));
-
-/* passport.use(new GitHubStrategy({
-    clientID: 'Iv1.2f2c33e249900bb5',
-    clientSecret: 'd7aa6df68d08388081590ecea8ebeded62f51af9',
-    callbackURL: 'http://localhost:8080/api/sessions/githubcallback',
-    }, async (accessToken, refreshToken, profile, done) => {
-        try {
-        const githubEmail = profile.emails ? profile.emails[0].value : null;
-
-        const existingUser = await User.findOne({ email: githubEmail });
-
-        if (existingUser) {
-            return done(null, existingUser);
-        } else {
-            const password = "1234"
-            const hashedPassword = await bcrypt.hash(password, 10);
-            const newUser = new User({
-                first_name: profile.displayName,
-                email: githubEmail,
-                password: hashedPassword,
-                role: "user"
-            });
-            await newUser.save();
-            return done(null, newUser);
-        }
-        } catch (error) {
-            return done(error, null);
-        }
-})); */
 
 
 
@@ -152,8 +108,8 @@ io.on("connection", (socket) => {
     });
 });
 
-serverHTTP.listen(port, () => {
-    console.log(`Servidor escuchando en http://localhost:${port}`);
+serverHTTP.listen(PORT, () => {
+    console.log(`Servidor escuchando en http://localhost:${PORT}`);
 });
 
 mongoose.connect('mongodb+srv://Matias25:19742013Nob@cluster0.yfm42kk.mongodb.net/Ecomerce', {
