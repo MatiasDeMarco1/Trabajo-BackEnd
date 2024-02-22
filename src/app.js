@@ -92,10 +92,11 @@ app.get('/realtimeproducts', (req, res) => {
 
 io.on("connection", (socket) => {
     console.log("Nuevo cliente conectado");
+
     const sendProductsUpdate = async () => {
         try {
             const products = await Product.find();
-            io.emit("updateProducts", products);
+            io.emit("updateProducts", products); 
         } catch (error) {
             console.error(error);
         }
@@ -103,10 +104,25 @@ io.on("connection", (socket) => {
 
     sendProductsUpdate();
 
-    socket.on("updateProducts", () => {
-        sendProductsUpdate();
+    socket.on("productDeleted", async function(productId) {
+        try {
+            await Product.findByIdAndDelete(productId);
+            sendProductsUpdate();
+        } catch (error) {
+            console.error(error);
+        }
+    });
+
+    socket.on("productAdded", async function(newProduct) {
+        try {
+            await Product.create(newProduct);
+            sendProductsUpdate();
+        } catch (error) {
+            console.error(error);
+        }
     });
 });
+
 
 serverHTTP.listen(PORT, () => {
     console.log(`Servidor escuchando en http://localhost:${PORT}`);

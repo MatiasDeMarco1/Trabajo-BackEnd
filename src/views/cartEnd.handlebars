@@ -1,0 +1,29 @@
+<h1>Productos en el carrito</h1>
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Cantidad</th>
+            <th>Subtotal</th>
+            <th>Acción</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each productsInfo}}
+            <tr>
+                <td>{{this.title}}</td>
+                <td>{{this.price}}</td>
+                <td>{{this.quantity}}</td>
+                <td>{{this.subtotal}}</td>
+                <td> <button onclick="eliminarProductoCarrito('{{this.cartId}}', '{{this.id}}')">Eliminar Producto</button></td>
+            </tr>
+        {{/each}}
+    </tbody>
+</table>
+<p>Total: {{totalAmount}}</p>
+
+<form id="finalizarCompraForm"  method="POST">
+    <button type="submit">Finalizar compra</button>
+</form>
+<script src="/index.js"></script>

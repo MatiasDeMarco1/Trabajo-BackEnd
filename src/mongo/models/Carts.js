@@ -13,7 +13,8 @@ const cartSchema = new mongoose.Schema({
             required: true,
             mutable: true 
         }
-    }]
+    }],
+    UserId: {type: mongoose.Schema.Types.ObjectId, ref: 'users', required: true }
 });
 
 cartSchema.plugin(mongoosePaginate);
