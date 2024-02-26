@@ -131,10 +131,8 @@ async function updateProducts(updatedProducts) {
 async function addToCart(productId, userId) {
     try {
         const cartResponse = await fetch(`/api/carts/${userId}`);
-        console.log(cartResponse)
         const cartData = await cartResponse.json();
         let cartId;
-        console.log(cartData);
         if (cartData.status == "ok") {
             cartId = cartData.data._id;
         } else {
