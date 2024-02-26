@@ -9,21 +9,34 @@
             <th>Acción</th>
         </tr>
     </thead>
-    <tbody>
+    <body>
         {{#each productsInfo}}
-            <tr>
+            <tr id="fila-{{this.id}}">
                 <td>{{this.title}}</td>
-                <td>{{this.price}}</td>
-                <td>{{this.quantity}}</td>
-                <td>{{this.subtotal}}</td>
+                <td id="precio-{{this.id}}">{{this.price}}</td>
+                <td id="cantidad-{{this.id}}">{{this.quantity}}</td>
+                <td id="subtotal-{{this.id}}">{{this.subtotal}}</td>
                 <td> <button onclick="eliminarProductoCarrito('{{this.cartId}}', '{{this.id}}')">Eliminar Producto</button></td>
             </tr>
         {{/each}}
-    </tbody>
+    </body>
 </table>
-<p>Total: {{totalAmount}}</p>
+<p id="total">Total: {{totalAmount}}</p>
 
 <form id="finalizarCompraForm"  method="POST">
     <button type="submit">Finalizar compra</button>
 </form>
 <script src="/index.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
+<script>
+    const socket = io();
+
+    socket.on('productoEliminado', ({ cartId, productId }) => {
+        const cantidadElement = document.getElementById(`cantidad-${productId}`);
+        const subtotalElement = document.getElementById(`subtotal-${productId}`);
+        cantidadElement.textContent = '0'; 
+        subtotalElement.textContent = '0'; 
+        const filaProducto = document.getElementById(`fila-${productId}`);
+        filaProducto.remove(); 
+    });
+</script>

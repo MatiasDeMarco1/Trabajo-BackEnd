@@ -181,19 +181,38 @@ async function eliminarProductoCarrito(cartId, productId) {
         const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
             method: 'DELETE'
         });
+
         if (response.ok) {
             const data = await response.json();
-            const { quantity, price } = data.product;
-            const cantidadElement = document.getElementById(`cantidad-${productId}`);
-            const precioElement = document.getElementById(`precio-${productId}`);
-            const subtotalElement = document.getElementById(`subtotal-${productId}`);
-            cantidadElement.textContent = quantity;
-            precioElement.textContent = price;
-            subtotalElement.textContent = quantity * price;
-            if (quantity === 0) {
+            const productData = data.data.products; 
+
+            const index = productData.findIndex(item => item.product === productId);
+
+            if (index !== -1) {
+                const cantidadElement = document.getElementById(`cantidad-${productId}`);
+                cantidadElement.textContent = productData[index].quantity;
+
+                const precioElement = document.getElementById(`precio-${productId}`);
+                const precio = parseInt(precioElement.textContent);
+                
+                const subtotalElement = document.getElementById(`subtotal-${productId}`);
+                subtotalElement.textContent = productData[index].quantity * precio;
+
+                const totalElement = document.getElementById("total");
+                const totalActual = parseInt(totalElement.textContent.replace("Total: ", ""));
+                const nuevoTotal = totalActual - precio;
+                totalElement.textContent = "Total: " + nuevoTotal;
+
+                if (productData[index].quantity === 0) {
+                    const filaProducto = document.getElementById(`fila-${productId}`);
+                    filaProducto.remove();
+                }
+                
+            } else {
                 const filaProducto = document.getElementById(`fila-${productId}`);
                 filaProducto.remove();
             }
+            
         } else {
             console.error('Error al eliminar el producto:', response.statusText);
         }

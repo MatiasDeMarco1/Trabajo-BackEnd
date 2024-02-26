@@ -101,6 +101,10 @@ io.on("connection", (socket) => {
             console.error(error);
         }
     };
+    socket.on('productoEliminado', ({ cartId, productId }) => {
+        console.log(`Producto eliminado del carrito ${cartId}: ${productId}`);
+        io.emit('productoEliminado', { cartId, productId });
+    });
 
     sendProductsUpdate();
 

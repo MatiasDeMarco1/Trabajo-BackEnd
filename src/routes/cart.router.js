@@ -176,23 +176,23 @@ Crouter.delete('/:cid/products/:pid', async (req, res) => {
         return res.status(500).json({ status: 'error', message: 'Error interno del servidor.' });
     }
 });
-Crouter.put('/:cid/products/:pid', async (req, res) => {
+Crouter.delete('/:cid/products/:pid', async (req, res) => {
     try {
         const cartId = req.params.cid;
         const productId = req.params.pid;
-        const { quantity } = req.body;
-        if (!quantity || isNaN(quantity) || quantity <= 0) {
-            return res.status(400).json({ status: 'error', message: 'La cantidad debe ser un número entero positivo.' });
-        }
         const cart = await Cart.findById(cartId);
         if (!cart) {
             return res.status(404).json({ status: 'error', message: `Carrito con ID ${cartId} no encontrado.` });
         }
         const productIndex = cart.products.findIndex((item) => item.product.toString() === productId);
         if (productIndex !== -1) {
-            cart.products[productIndex].quantity = quantity;
+            if (cart.products[productIndex].quantity > 1) {
+                cart.products[productIndex].quantity -= 1;
+            } else {
+                cart.products.splice(productIndex, 1);
+            }
             await cart.save();
-            return res.status(200).json({ status: 'ok', message: 'Cantidad de producto actualizada en el carrito con éxito.', data: cart });
+            return res.status(200).json({ status: 'ok', message: 'Producto eliminado del carrito con éxito.', data: cart });
         } else {
             return res.status(404).json({ status: 'error', message: `Producto con ID ${productId} no encontrado en el carrito.` });
         }
