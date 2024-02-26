@@ -168,12 +168,7 @@ function redirectToCart(userId) {
             return response.json();
         })
         .then(data => {
-            let cartId
-            for (let i = 0; i < data.data.length; i++){
-                if  (userId = data.data[i].UserId){
-                    cartId = data.data[i]._id;
-                }
-            }
+            const cartId = data.data._id
             window.location.href = `/api/carts/${cartId}/purchase`;
         })
         .catch(error => {
