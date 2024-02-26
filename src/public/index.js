@@ -129,24 +129,24 @@ async function updateProducts(updatedProducts) {
 
 
 async function addToCart(productId, userId) {
-    console.log(productId);
-    console.log(userId);
     try {
         const cartResponse = await fetch(`/api/carts/${userId}`);
+        console.log(cartResponse)
         const cartData = await cartResponse.json();
         let cartId;
-        if (cartData.cart) {
-            cartId = cartData.cart._id;
+        console.log(cartData);
+        if (cartData.status == "ok") {
+            cartId = cartData.data._id;
         } else {
-            const newCartResponse = await fetch(`/api/carts/${userId}`, {
+            const newCartResponse =  await fetch(`/api/carts/${userId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ userId })
             });
-            const newCartData = await newCartResponse.json();
-            cartId = newCartData.cart._id;
+            const newCartData =  await newCartResponse.json();
+            cartId = newCartData.carts._id;
         }
         const addToCartResponse = await fetch(`/api/carts/${cartId}/product/${productId}`, {
             method: 'POST',
