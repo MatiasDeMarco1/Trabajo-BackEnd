@@ -168,7 +168,12 @@ function redirectToCart(userId) {
             return response.json();
         })
         .then(data => {
-            const cartId = data.cart._id;
+            let cartId
+            for (let i = 0; i < data.data.length; i++){
+                if  (userId = data.data[i].UserId){
+                    cartId = data.data[i]._id;
+                }
+            }
             window.location.href = `/api/carts/${cartId}/purchase`;
         })
         .catch(error => {
