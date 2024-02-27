@@ -178,6 +178,8 @@ function redirectToCart(userId) {
 }
 async function eliminarProductoCarrito(cartId, productId) {
     try {
+        const precioElement = document.getElementById(`precio-${productId}`);
+        const precio = parseInt(precioElement.textContent);
         const response = await fetch(`/api/carts/${cartId}/products/${productId}`, {
             method: 'DELETE'
         });
@@ -192,9 +194,6 @@ async function eliminarProductoCarrito(cartId, productId) {
                 const cantidadElement = document.getElementById(`cantidad-${productId}`);
                 cantidadElement.textContent = productData[index].quantity;
 
-                const precioElement = document.getElementById(`precio-${productId}`);
-                const precio = parseInt(precioElement.textContent);
-                
                 const subtotalElement = document.getElementById(`subtotal-${productId}`);
                 subtotalElement.textContent = productData[index].quantity * precio;
 
@@ -206,11 +205,15 @@ async function eliminarProductoCarrito(cartId, productId) {
                 if (productData[index].quantity === 0) {
                     const filaProducto = document.getElementById(`fila-${productId}`);
                     filaProducto.remove();
+                    totalElement.textContent = "Total: " + nuevoTotal;
                 }
-                
             } else {
                 const filaProducto = document.getElementById(`fila-${productId}`);
                 filaProducto.remove();
+                const totalElement = document.getElementById("total");
+                const totalActual = parseInt(totalElement.textContent.replace("Total: ", ""));
+                const nuevoTotal = totalActual - precio;
+                totalElement.textContent = "Total: " + nuevoTotal;
             }
             
         } else {
