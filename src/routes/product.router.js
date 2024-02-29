@@ -4,6 +4,7 @@ const Product = require('../mongo/models/Product.js');
 const ProductManagerDb = require("../mongo/productManagerDb.js");
 const productManagerDb = new ProductManagerDb();
 const User = require('../mongo/models/users');
+const { customizeError } = require("../middleware/errorHandler");
 
 Prouter.get("/", async (req, res) => {
     try {
@@ -43,7 +44,7 @@ Prouter.get("/", async (req, res) => {
         res.render('product', { products, user: userFromDB, isAdmin, isAdminFalse });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ status: "error", message: "Error interno del servidor." });
+        res.status(500).json({ status: "error", message: customizeError('INTERNAL_SERVER_ERROR') });
     }
 });
 Prouter.get('/:pid', async (req, res) => {
@@ -53,10 +54,10 @@ Prouter.get('/:pid', async (req, res) => {
         if (product) {
             res.status(200).json({ status: "ok", data: product });
         } else {
-            res.status(404).json({ status: "error", message: "Producto no encontrado" });
+            res.status(404).json({ status: "error", message: customizeError('PRODUCT_NOT_FOUND') });
         }
     } catch (error) {
-        res.status(500).json({ status: "error", message: "Error" });
+        res.status(500).json({ status: "error", message: customizeError('ERROR') });
     }
 });
 
@@ -64,11 +65,11 @@ Prouter.post('/', async (req, res) => {
     try {
         const { title, description, code, price, stock, category, thumbnails } = req.body;
         if (!title || !description || !code || !price || !stock || !category) {
-            return res.status(400).json({ status: "error", message: "Todos los campos son obligatorios." });
+            return res.status(400).json({ status: "error", message: customizeError('MISSING_FIELDS') });
         }
         const productData = {
             title,
-            description,
+            description,  
             code,
             price,
             stock,
@@ -82,7 +83,7 @@ Prouter.post('/', async (req, res) => {
         res.redirect('/products');
     } catch (error) {
         console.error(error);
-        res.status(500).json({ status: "error", message: "Error interno del servidor." });
+        res.status(500).json({ status: "error", message: customizeError('INTERNAL_SERVER_ERROR') });
     }
 });
 
@@ -91,20 +92,20 @@ Prouter.put('/:pid', async (req, res) => {
         const productId = req.params.pid;
         const updatedProductData = req.body;
         if (Object.keys(updatedProductData).length === 0) {
-            return res.status(400).json({ status: "error", message: "Debe proporcionar al menos un campo para actualizar." });
+            return res.status(400).json({ status: "error", message: customizeError('EMPTY_UPDATE_FIELDS') });
         }
         const updatedProduct = await Product.findByIdAndUpdate(productId, updatedProductData, { new: true });        
         if (!updatedProduct) {
-            return res.status(404).json({ status: "error", message: "Producto no encontrado." });
+            return res.status(404).json({ status: "error", message: customizeError('PRODUCT_NOT_FOUND') });
         }
 
         const io = req.app.get("io");
         io.emit("updateProducts", await Product.find());
         
-        return res.status(200).json({ status: "ok", message: "Producto actualizado con éxito.", data: updatedProduct });
+        return res.status(200).json({ status: "ok", message: customizeError('PRODUCT_UPDATED'), data: updatedProduct });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ status: "error", message: "Error interno del servidor." });
+        res.status(500).json({ status: "error", message: customizeError('INTERNAL_SERVER_ERROR') });
     }
 }); 
 
@@ -114,11 +115,12 @@ Prouter.delete('/:pid', async (req, res) => {
         await Product.findByIdAndDelete(productId);
         const io = req.app.get("io");
         io.emit("productDeleted", productId); 
-        res.status(200).json({ status: "success", message: "Producto eliminado exitosamente" });
+        res.status(200).json({ status: "success", message:customizeError('PRODUCT_DELETED') });
     } catch (error) {
         console.error(error);
-        res.status(500).json({ status: "error", message: "Error interno del servidor." });
+        res.status(500).json({ status: "error", message: customizeError('INTERNAL_SERVER_ERROR') });
     }
 });
 
-module.exports = Prouter
+
+module.exports = Prouter;

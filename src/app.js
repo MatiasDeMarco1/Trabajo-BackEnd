@@ -13,6 +13,7 @@ const passport = require('passport');
 const User = require('./mongo/models/users');
 const sessionController = require('./Controllers/sessioncontroller');
 const config = require('./Config/config.js');
+const mockingProductsRoute = require('./routes/mockingProductsRouter')
 
 const app = express();
 const PORT = config.PORT
@@ -71,7 +72,7 @@ app.use("/api/carts", cartsRouter);
 app.use('/api/sessions', sessionRouter);
 app.use('/', viewRouter);
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use('/mockingproducts', mockingProductsRoute);
 
 
 app.set("io", io);
