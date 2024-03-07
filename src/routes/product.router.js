@@ -1,8 +1,7 @@
-const { Router } = require("express")
-const Prouter = Router()
+const { Router } = require("express");
+const Prouter = Router();
 const Product = require('../mongo/models/Product.js');
-const ProductManagerDb = require("../mongo/productManagerDb.js");
-const productManagerDb = new ProductManagerDb();
+const { logger } = require('../utils/logger');
 const User = require('../mongo/models/users');
 const { customizeError } = require("../middleware/errorHandler");
 
@@ -33,7 +32,7 @@ Prouter.get("/", async (req, res) => {
             hasnextpage: hasNextPage,
             prevLink: prevLink,
             nextLink: nextLink
-        }; 
+        };
         console.log(result);
         const userFromDB = await User.findById(user._id);
         const isAdmin = userFromDB.role === 'admin';
@@ -43,13 +42,14 @@ Prouter.get("/", async (req, res) => {
         }
         res.render('product', { products, user: userFromDB, isAdmin, isAdminFalse });
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         res.status(500).json({ status: "error", message: customizeError('INTERNAL_SERVER_ERROR') });
     }
 });
+
 Prouter.get('/:pid', async (req, res) => {
     try {
-        const productId = req.params.pid; 
+        const productId = req.params.pid;
         const product = await Product.findById(productId);
         if (product) {
             res.status(200).json({ status: "ok", data: product });
@@ -82,7 +82,7 @@ Prouter.post('/', async (req, res) => {
         io.emit("productAdded", newProduct);
         res.redirect('/products');
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         res.status(500).json({ status: "error", message: customizeError('INTERNAL_SERVER_ERROR') });
     }
 });
@@ -104,7 +104,7 @@ Prouter.put('/:pid', async (req, res) => {
         
         return res.status(200).json({ status: "ok", message: customizeError('PRODUCT_UPDATED'), data: updatedProduct });
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         res.status(500).json({ status: "error", message: customizeError('INTERNAL_SERVER_ERROR') });
     }
 }); 
@@ -117,10 +117,9 @@ Prouter.delete('/:pid', async (req, res) => {
         io.emit("productDeleted", productId); 
         res.status(200).json({ status: "success", message:customizeError('PRODUCT_DELETED') });
     } catch (error) {
-        console.error(error);
+        logger.error(error);
         res.status(500).json({ status: "error", message: customizeError('INTERNAL_SERVER_ERROR') });
     }
 });
-
 
 module.exports = Prouter;

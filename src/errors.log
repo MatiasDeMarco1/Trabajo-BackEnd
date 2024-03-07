@@ -1,0 +1,17 @@
+2024-03-07T12:06:57.328Z error: Error message
+2024-03-07T12:07:05.542Z error: Error message
+2024-03-07T12:07:54.684Z error: Error message
+2024-03-07T12:09:12.011Z info: Servidor escuchando en http://localhost:8080
+2024-03-07T12:09:12.847Z info: Conexión exitosa a MongoDB
+2024-03-07T12:09:17.769Z debug: Debug message
+2024-03-07T12:09:17.769Z info: Info message
+2024-03-07T12:09:17.770Z warn: Warning message
+2024-03-07T12:09:17.770Z error: Error message
+2024-03-07T12:09:44.575Z info: Servidor escuchando en http://localhost:8080
+2024-03-07T12:09:45.771Z info: Servidor escuchando en http://localhost:8080
+2024-03-07T12:09:47.219Z info: Servidor escuchando en http://localhost:8080
+2024-03-07T12:09:47.928Z info: Conexión exitosa a MongoDB
+2024-03-07T12:09:49.283Z info: Servidor escuchando en http://localhost:8080
+2024-03-07T12:09:50.087Z info: Conexión exitosa a MongoDB
+2024-03-07T12:10:02.165Z info: Servidor escuchando en http://localhost:8080
+2024-03-07T12:10:03.161Z info: Conexión exitosa a MongoDB
