@@ -109,6 +109,9 @@ Crouter.post('/:cid/product/:pid', async (req, res) => {
         if (!product) {
             return res.status(404).json({ status: 'error', message: `Producto con ID ${productId} no encontrado en Products.` });
         }
+        if (product.owner.equals(req.user._id)) {
+            return res.status(403).json({ message: 'No puedes agregar tu propio producto al carrito' });
+        }
         const productIndex = cart.products.findIndex((item) => item.product.toString() === productId);
         if (productIndex !== -1) {
             cart.products[productIndex].quantity += 1;
