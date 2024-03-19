@@ -67,20 +67,27 @@ Prouter.post('/', async (req, res) => {
         if (!title || !description || !code || !price || !stock || !category) {
             return res.status(400).json({ status: "error", message: customizeError('MISSING_FIELDS') });
         }
-        const productData = {
-            title,
-            description,  
-            code,
-            price,
-            stock,
-            status: true,
-            category,
-            thumbnails,
-        };
-        const newProduct = await Product.create(productData);
-        const io = req.app.get("io");
-        io.emit("productAdded", newProduct);
-        res.redirect('/products');
+        const user = req.user;
+        const userFromDB = await User.findById(user._id);
+        if (userFromDB.role === 'premium') {
+            const productData = {
+                title,
+                description,  
+                code,
+                price,
+                stock,
+                status: true,
+                category,
+                thumbnails,
+                owner: user.email 
+            };
+            const newProduct = await Product.create(productData);
+            const io = req.app.get("io");
+            io.emit("productAdded", newProduct);
+            return res.redirect('/products');
+        } else {
+            return res.status(403).json({ status: "error", message: "No está autorizado para crear productos" });
+        }
     } catch (error) {
         logger.error(error);
         res.status(500).json({ status: "error", message: customizeError('INTERNAL_SERVER_ERROR') });

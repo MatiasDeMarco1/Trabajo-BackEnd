@@ -11,6 +11,7 @@ const User = require('./mongo/models/users');
 const sessionController = require('./Controllers/sessioncontroller');
 const config = require('./Config/config.js');
 const logger = require('./utils/logger.js');
+const nodemailer = require('nodemailer');
 
 const productosRoutes = require("./routes/product.router.js");
 const Product = require("./mongo/models/Product.js");

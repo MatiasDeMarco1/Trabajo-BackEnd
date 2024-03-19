@@ -27,6 +27,8 @@
     }
 });
  */
+
+
 function deleteProduct(productId) {
     if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
         fetch(`/products/${productId}`, {
