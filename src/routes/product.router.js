@@ -5,6 +5,58 @@ const { logger } = require('../utils/logger');
 const User = require('../mongo/models/users');
 const { customizeError } = require("../middleware/errorHandler");
 
+/**
+ * @swagger
+ * /products:
+ *   get:
+ *     summary: Obtiene todos los productos paginados.
+ *     description: Obtiene una lista de todos los productos paginados.
+ *     parameters:
+ *       - in: query
+ *         name: page
+ *         description: Número de página.
+ *         required: false
+ *         schema:
+ *           type: integer
+ *       - in: query
+ *         name: limit
+ *         description: Límite de productos por página.
+ *         required: false
+ *         schema:
+ *           type: integer
+ *     responses:
+ *       200:
+ *         description: Lista de productos paginados.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 payload:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Product'
+ *                 totalPage:
+ *                   type: integer
+ *                 prevpage:
+ *                   type: integer
+ *                 nextPage:
+ *                   type: integer
+ *                 page:
+ *                   type: integer
+ *                 hasprevpage:
+ *                   type: boolean
+ *                 hasnextpage:
+ *                   type: boolean
+ *                 prevLink:
+ *                   type: string
+ *                 nextLink:
+ *                   type: string
+ *       500:
+ *         description: Error interno del servidor.
+ */
 Prouter.get("/", async (req, res) => {
     try {
         const user = req.user;

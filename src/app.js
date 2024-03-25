@@ -12,6 +12,7 @@ const sessionController = require('./Controllers/sessioncontroller');
 const config = require('./Config/config.js');
 const logger = require('./utils/logger.js');
 const nodemailer = require('nodemailer');
+const swaggerConfig = require('./Swagger/swaggerConfig');
 
 const productosRoutes = require("./routes/product.router.js");
 const Product = require("./mongo/models/Product.js");
@@ -36,6 +37,8 @@ const hbs = exphbs.create({
         allowProtoMethodsByDefault: true,
     },
 });
+
+swaggerConfig(app);
 
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');

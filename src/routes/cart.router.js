@@ -24,6 +24,40 @@ async function generateUniqueCode() {
     return code;
 }
 
+/**
+ * @swagger
+ * /api/carts/{cid}/purchase:
+ *   post:
+ *     summary: Realiza una compra del carrito.
+ *     description: Realiza una compra del carrito con el ID especificado.
+ *     parameters:
+ *       - in: path
+ *         name: cid
+ *         description: ID del carrito a comprar.
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Compra realizada con éxito.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                 message:
+ *                   type: string
+ *                 data:
+ *                   $ref: '#/components/schemas/Ticket'
+ *       400:
+ *         description: Error de solicitud.
+ *       404:
+ *         description: Carrito no encontrado.
+ *       500:
+ *         description: Error interno del servidor.
+ */
 Crouter.post('/:cid/purchase', async (req, res) => {
     try {
         const cartId = req.params.cid;
