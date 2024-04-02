@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const Prouter = Router();
 const Product = require('../mongo/models/Product.js');
-const { logger } = require('../utils/logger');
+const logger = require("../utils/logger.js");
 const User = require('../mongo/models/users');
 const { customizeError } = require("../middleware/errorHandler");
 
@@ -95,6 +95,7 @@ Prouter.get("/", async (req, res) => {
         res.render('product', { products, user: userFromDB, isAdmin, isAdminFalse });
     } catch (error) {
         logger.error(error);
+        console.log(error);
         res.status(500).json({ status: "error", message: customizeError('INTERNAL_SERVER_ERROR') });
     }
 });

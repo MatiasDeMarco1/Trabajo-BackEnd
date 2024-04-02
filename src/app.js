@@ -8,7 +8,7 @@ const MongoStore = require("connect-mongo");
 const bodyParser = require('body-parser');
 const passport = require('passport');
 const User = require('./mongo/models/users');
-const sessionController = require('./Controllers/sessioncontroller');
+const sessionController = require('./Controllers/sessionController.js');
 const config = require('./Config/config.js');
 const logger = require('./utils/logger.js');
 const nodemailer = require('nodemailer');
@@ -29,6 +29,7 @@ const SESSION_SECRET = config.SESSION_SECRET;
 
 const serverHTTP = http.createServer(app);
 const io = socketIO(serverHTTP);
+app.use(passport.initialize());
 
 const hbs = exphbs.create({
     extname: '.handlebars',
@@ -43,8 +44,6 @@ swaggerConfig(app);
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.use(express.static('public'));
-
-app.use(passport.initialize());
 
 app.use(session({
     store: MongoStore.create({

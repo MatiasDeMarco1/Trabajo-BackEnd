@@ -11,7 +11,7 @@ async function sendPasswordResetEmail(email, token) {
     });
 
     const mailOptions = {
-        from: 'tucorreo@gmail.com',
+        from: 'demarcomatias25@gmail.com',
         to: email,
         subject: 'Restablecer contraseña',
         html: `<p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>

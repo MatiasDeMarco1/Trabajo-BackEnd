@@ -1,0 +1,5 @@
+2024-04-02T01:22:47.668Z error: Error en prueba 'Todos los productos': Error: read ECONNRESET
+2024-04-02T01:22:47.673Z error: Error en prueba 'Retorna producto por ID': AggregateError
+2024-04-02T01:22:47.676Z error: Error en prueba 'Agrega producto': AggregateError
+2024-04-02T01:24:14.974Z error: Error en prueba 'Todos los productos': AssertionError: expected 500 to equal 200
+2024-04-02T01:24:15.046Z error: Error en prueba 'Agrega producto': AssertionError: expected 400 to equal 201
