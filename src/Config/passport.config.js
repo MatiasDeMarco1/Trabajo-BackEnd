@@ -69,15 +69,15 @@ exports.initializePassportLocal = () => {
         { usernameField: 'email', passReqToCallback: true },
         async (req, email, password, done) => {
             try {
-                const user = await User.findOne({ email });
+                const user = await User.findOne({ email }).exec(); 
                 if (!user) {
                     console.log('Usuario no encontrado');
-                    return done(null, false, 'Email o contraseña equivocado');
+                    return done(null, false, { message: 'Email o contraseña incorrectos' });
                 }
                 const passwordMatch = await bcrypt.compare(password, user.password);
                 if (!passwordMatch) {
                     console.log('Contraseña incorrecta');
-                    return done(null, false, 'Email o contraseña equivocado');
+                    return done(null, false, { message: 'Email o contraseña incorrectos' });
                 }
                 console.log('Inicio de sesión exitoso');
                 return done(null, user);
