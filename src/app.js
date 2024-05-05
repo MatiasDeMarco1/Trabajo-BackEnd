@@ -64,8 +64,6 @@ app.use(session({
     store: MongoStore.create({
         mongoUrl: MONGO_URL,
         mongoOptions: {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
         },
         ttl: 15000000000,
     }),
@@ -155,8 +153,6 @@ serverHTTP.listen(PORT, () => {
 });
 
 mongoose.connect(MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
 });
 
 const db = mongoose.connection;

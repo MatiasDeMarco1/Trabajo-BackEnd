@@ -87,7 +87,6 @@ Crouter.post('/:cid/purchase', async (req, res) => {``
                 price: product.price
             });
         }
-
         const session = await stripe.checkout.sessions.create({
             payment_method_types: ['card'],
             line_items: [
@@ -109,8 +108,6 @@ Crouter.post('/:cid/purchase', async (req, res) => {``
                 cartId: cartId
             } 
         });
-
-
         return res.redirect(303, session.url); 
     } catch (error) {
         console.error('Error en la compra:', error);

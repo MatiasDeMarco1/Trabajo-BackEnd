@@ -13,3 +13,23 @@
 2024-05-05T23:03:41.297Z info: Conexión exitosa a MongoDB
 2024-05-05T23:11:28.384Z info: Servidor escuchando en http://localhost:8080
 2024-05-05T23:11:29.451Z info: Conexión exitosa a MongoDB
+2024-05-05T23:11:30.713Z info: Servidor escuchando en http://localhost:8080
+2024-05-05T23:11:31.605Z info: Conexión exitosa a MongoDB
+2024-05-05T23:12:43.018Z info: Servidor escuchando en http://localhost:8080
+2024-05-05T23:12:44.047Z info: Conexión exitosa a MongoDB
+2024-05-05T23:12:46.217Z info: Servidor escuchando en http://localhost:8080
+2024-05-05T23:12:47.131Z info: Conexión exitosa a MongoDB
+2024-05-05T23:14:29.145Z info: Servidor escuchando en http://localhost:8080
+2024-05-05T23:14:30.139Z info: Conexión exitosa a MongoDB
+2024-05-05T23:14:41.662Z info: Servidor escuchando en http://localhost:8080
+2024-05-05T23:14:52.034Z error: Operation `Products.find()` buffering timed out after 10000ms
+2024-05-05T23:18:45.888Z info: Servidor escuchando en http://localhost:8080
+2024-05-05T23:18:50.448Z info: Servidor escuchando en http://localhost:8080
+2024-05-05T23:19:00.947Z error: Operation `Products.find()` buffering timed out after 10000ms
+2024-05-05T23:29:04.882Z info: Servidor escuchando en http://localhost:8080
+2024-05-05T23:29:16.048Z info: Servidor escuchando en http://localhost:8080
+2024-05-05T23:29:28.186Z error: Operation `Products.find()` buffering timed out after 10000ms
+2024-05-05T23:37:45.916Z info: Servidor escuchando en http://localhost:8080
+2024-05-05T23:37:57.022Z error: Operation `Products.find()` buffering timed out after 10000ms
+2024-05-05T23:39:33.061Z info: Servidor escuchando en http://localhost:8080
+2024-05-05T23:39:34.166Z info: Conexión exitosa a MongoDB
