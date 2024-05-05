@@ -23,11 +23,10 @@
 </table>
 <p id="total">Total: {{totalAmount}}</p>
 
-<form id="finalizarCompraForm"  method="POST">
-    <button type="submit">Finalizar compra</button>
-</form>
-<script src="/index.js"></script>
+<button id="checkout-button">Pagar</button>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.3.1/socket.io.js"></script>
+
 <script>
     const socket = io();
 
@@ -40,3 +39,8 @@
         filaProducto.remove(); 
     });
 </script>
+
+<script>
+    const userId = '{{userId}}; 
+</script>
+<script src="/index.js"></script>

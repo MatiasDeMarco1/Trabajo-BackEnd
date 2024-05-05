@@ -21,15 +21,22 @@ const productRouter = require("./routes/product.router.js");
 const cartsRouter = require("./routes/cart.router.js");
 const sessionRouter = require("./routes/session.router.js");
 const viewRouter = require("./routes/view.router.js");
+const paymentRouter = require("./routes/payments.router.js");
+const path = require('path');
 
 const app = express();
 const PORT = config.PORT;
 const MONGO_URL = config.MONGO_URL;
 const SESSION_SECRET = config.SESSION_SECRET;
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
 
 const serverHTTP = http.createServer(app);
 const io = socketIO(serverHTTP);
 app.use(passport.initialize());
+
+app.set('views', path.join(__dirname, 'views'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 const hbs = exphbs.create({
     extname: '.handlebars',
@@ -78,6 +85,7 @@ app.use("/api/products", productRouter);
 app.use("/api/carts", cartsRouter);
 app.use('/api/sessions', sessionRouter);
 app.use('/', viewRouter);
+app.use('/api/payments', paymentRouter)
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/mockingproducts', mockingProductsRoute);
 

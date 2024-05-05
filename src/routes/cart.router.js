@@ -7,6 +7,7 @@ const Product = require('../mongo/models/Product');
 const Ticket = require('../mongo/models/Ticket');
 const cartController = require('../Controllers/cartcController');
 const isAuthenticated = require('../middleware/auth.middleware')
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 async function generateUniqueCode() {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -58,6 +59,67 @@ async function generateUniqueCode() {
  *       500:
  *         description: Error interno del servidor.
  */
+Crouter.post('/:cid/purchase', async (req, res) => {``
+    try {
+        const cartId = req.params.cid;
+        const cart = await Cart.findById(cartId);
+        if (!cart) {
+            return res.status(404).json({ status: 'error', message: `Carrito con ID ${cartId} no encontrado.` });
+        }
+        if (cart.products.length === 0) {
+            return res.status(400).json({ status: 'error', message: 'El carrito está vacío. No se puede finalizar la compra.' });
+        }
+        const products = cart.products;
+        let totalAmount = 0;
+        const ticketProducts = [];
+        for (const item of products) {
+            const product = await Product.findById(item.product);
+            if (!product) {
+                return res.status(404).json({ status: 'error', message: `Producto con ID ${item.product} no encontrado en Products.` });
+            }
+            if (product.stock < item.quantity) {
+                return res.status(400).json({ status: 'error', message: `Stock insuficiente para el producto ${product._id}.` });
+            }
+            totalAmount += product.price * item.quantity;
+            ticketProducts.push({
+                productId: product._id,
+                quantity: item.quantity,
+                price: product.price
+            });
+        }
+
+        const session = await stripe.checkout.sessions.create({
+            payment_method_types: ['card'],
+            line_items: [
+                {
+                    price_data: {
+                        currency: 'usd',
+                        product_data: {
+                            name: 'Compra de productos', 
+                        },
+                        unit_amount: totalAmount * 100, 
+                    },
+                    quantity: 1,
+                },
+            ],
+            mode: 'payment',
+            success_url: 'https://preentrega-backend-production.up.railway.app/products', 
+            cancel_url: 'https://tu-web.com/cancel',
+            metadata: {
+                cartId: cartId
+            } 
+        });
+
+
+        return res.redirect(303, session.url); 
+    } catch (error) {
+        console.error('Error en la compra:', error);
+        return res.status(500).json({ status: 'error', message: 'Error interno del servidor. ' + error.message });
+    }
+});
+
+
+
 Crouter.post('/:cid/purchase', async (req, res) => {
     try {
         const cartId = req.params.cid;
@@ -143,7 +205,7 @@ Crouter.post('/:cid/product/:pid', async (req, res) => {
         if (!product) {
             return res.status(404).json({ status: 'error', message: `Producto con ID ${productId} no encontrado en Products.` });
         }
-        if (product.owner.equals(req.user._id)) {
+        if (product.owner && product.owner.equals(req.user._id)) {
             return res.status(403).json({ message: 'No puedes agregar tu propio producto al carrito' });
         }
         const productIndex = cart.products.findIndex((item) => item.product.toString() === productId);
@@ -167,6 +229,7 @@ Crouter.get('/:cid/purchase', async (req, res) => {
     try {
         const cartId = req.params.cid;
         const cart = await Cart.findById(cartId);
+        const userId = cart.UserId
         if (!cart) {
             return res.status(404).json({ status: 'error', message: `Carrito con ID ${cartId} no encontrado.` });
         }
@@ -178,11 +241,12 @@ Crouter.get('/:cid/purchase', async (req, res) => {
                 price: product.price,
                 quantity: item.quantity,
                 subtotal: product.price * item.quantity,
-                cartId: cartId
+                cartId: cartId,
+                userId: userId
             };
         }));
         const totalAmount = productsInfo.reduce((acc, curr) => acc + curr.subtotal, 0);
-        res.render('cartEnd', { productsInfo, totalAmount, cartId}); 
+        res.render('cartEnd', { productsInfo, totalAmount, cartId, userId}); 
     } catch (error) {
         console.error(error);
         res.status(500).json({ status: 'error', message: 'Error interno del servidor.' });
@@ -268,5 +332,7 @@ Crouter.get('/:uid', async (req, res) => {
         res.status(500).json({ status: 'error', message: 'Error interno del servidor.' });
     }
 });
+
+
 
 module.exports = Crouter

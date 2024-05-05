@@ -3,3 +3,9 @@
 2024-04-02T01:22:47.676Z error: Error en prueba 'Agrega producto': AggregateError
 2024-04-02T01:24:14.974Z error: Error en prueba 'Todos los productos': AssertionError: expected 500 to equal 200
 2024-04-02T01:24:15.046Z error: Error en prueba 'Agrega producto': AssertionError: expected 400 to equal 201
+2024-05-05T22:57:10.744Z info: Servidor escuchando en http://localhost:8080
+2024-05-05T22:57:11.827Z info: Conexión exitosa a MongoDB
+2024-05-05T22:57:36.902Z info: Servidor escuchando en http://localhost:8080
+2024-05-05T22:57:37.751Z info: Conexión exitosa a MongoDB
+2024-05-05T23:00:43.885Z info: Servidor escuchando en http://localhost:8080
+2024-05-05T23:00:44.900Z info: Conexión exitosa a MongoDB

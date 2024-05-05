@@ -150,7 +150,8 @@ async function addToCart(productId, userId) {
         }
         const productResponse = await fetch(`/api/products/${productId}`);
         const productData = await productResponse.json();
-        if (productData.owner.equals(userId)) {
+        
+        if (productData.owner && productData.owner.toString() === userId) {
             throw new Error('No puedes agregar tu propio producto al carrito.');
         }
         const addToCartResponse = await fetch(`/api/carts/${cartId}/product/${productId}`, {

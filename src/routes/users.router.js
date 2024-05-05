@@ -49,7 +49,7 @@ router.put('/premium/:uid', async (req, res) => {
 router.post('/:uid/documents', upload.array('documents'), async (req, res) => {
     try {
         const userId = req.params.uid;
-        const user = await User.findById(userId);
+        const user = await User.findById(userId);   
         if (!user) {
             return res.status(404).json({ status: 'error', message: 'Usuario no encontrado' });
         }
