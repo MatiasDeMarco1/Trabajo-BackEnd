@@ -46,6 +46,14 @@ const hbs = exphbs.create({
     },
 });
 
+app.use((req, res, next) => {
+    if (req.url === '/') {
+        return res.redirect('/login');
+    }
+    next();
+});
+
+
 swaggerConfig(app);
 
 app.engine('handlebars', hbs.engine);
