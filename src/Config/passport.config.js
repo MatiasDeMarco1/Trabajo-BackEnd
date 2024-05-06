@@ -69,8 +69,8 @@ exports.initializePassportLocal = () => {
         { usernameField: 'email', passReqToCallback: true },
         async (req, email, password, done) => {
             try {
-                console.log(email, password);
-                const user = await User.findOne({ email }).exec(); 
+                const user = await User.findOne({ email }).exec();
+                console.log(user);
                 if (!user) {
                     console.log('Usuario no encontrado');
                     return done(null, false, { message: 'Email o contraseña incorrectos' });

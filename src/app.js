@@ -62,8 +62,6 @@ app.use(express.static('public'));
 app.use(session({
     store: MongoStore.create({
         mongoUrl: MONGO_URL,
-        mongoOptions: {
-        },
         ttl: 15000000000,
     }),
     secret: SESSION_SECRET,
