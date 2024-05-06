@@ -11,73 +11,69 @@ const User = require('./mongo/models/users');
 const sessionController = require('./Controllers/sessionController.js');
 const config = require('./Config/config.js');
 const logger = require('./utils/logger.js');
+const nodemailer = require('nodemailer');
 const swaggerConfig = require('./Swagger/swaggerConfig');
-const path = require('path');
 
 const productosRoutes = require("./routes/product.router.js");
+const Product = require("./mongo/models/Product.js");
 const mockingProductsRoute = require('./routes/mockingProductsRouter');
+const productRouter = require("./routes/product.router.js");
 const cartsRouter = require("./routes/cart.router.js");
 const sessionRouter = require("./routes/session.router.js");
 const viewRouter = require("./routes/view.router.js");
 const paymentRouter = require("./routes/payments.router.js");
-
-const Product = require("./mongo/models/Product.js");
+const path = require('path');
 
 const app = express();
 const PORT = config.PORT;
 const MONGO_URL = config.MONGO_URL;
 const SESSION_SECRET = config.SESSION_SECRET;
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+
 
 const serverHTTP = http.createServer(app);
 const io = socketIO(serverHTTP);
+app.use(passport.initialize());
 
-app.engine('handlebars', exphbs());
-app.set('view engine', 'handlebars');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use(session({
-    store: MongoStore.create({ mongoUrl: MONGO_URL }),
-    secret: SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
+const hbs = exphbs.create({
+    extname: '.handlebars',
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true,
+    },
+});
 
 app.use((req, res, next) => {
-    if (req.url === '/' && !req.isAuthenticated()) {
+    if (req.url === '/') {
         return res.redirect('/login');
     }
     next();
 });
 
 
-app.use('/products', productosRoutes);
-app.use('/api/products', productosRoutes);
-app.use('/api/carts', cartsRouter);
-app.use('/api/sessions', sessionRouter);
-app.use('/', viewRouter);
-app.use('/api/payments', paymentRouter);
-app.use('/mockingproducts', mockingProductsRoute);
+swaggerConfig(app);
 
+app.engine('handlebars', hbs.engine);
+app.set('view engine', 'handlebars');
+app.use(express.static('public'));
 
-app.set("io", io);
-io.on("connection", (socket) => {
-    console.log("Nuevo cliente conectado");
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: MONGO_URL,
+        mongoOptions: {
+        },
+        ttl: 15000000000,
+    }),
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
 
-    socket.on('productoEliminado', ({ cartId, productId }) => {
-        logger.info(`Producto eliminado del carrito ${cartId}: ${productId}`);
-        io.emit('productoEliminado', { cartId, productId });
-    });
-
-});
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.get('/loggerTest', (req, res) => {
     logger.debug('Debug');
@@ -86,7 +82,20 @@ app.get('/loggerTest', (req, res) => {
     logger.error('Error'); 
     res.send('Logs enviados al logger');
 });
+app.use(passport.initialize());
+app.use(passport.session());
+sessionController;
 
+app.use('/products', productRouter);
+app.use("/api/products", productRouter);
+app.use("/api/carts", cartsRouter);
+app.use('/api/sessions', sessionRouter);
+app.use('/', viewRouter);
+app.use('/api/payments', paymentRouter)
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use('/mockingproducts', mockingProductsRoute);
+
+app.set("io", io);
 
 app.get("/home", async (req, res) => {
     try {
@@ -98,14 +107,59 @@ app.get("/home", async (req, res) => {
     }
 });
 
+app.get('/realtimeproducts', (req, res) => {
+    res.render('realtimeproducts');
+});
+
+io.on("connection", (socket) => {
+    console.log("Nuevo cliente conectado");
+
+    const sendProductsUpdate = async () => {
+        try {
+            const products = await Product.find();
+            io.emit("updateProducts", products);
+        } catch (error) {
+            logger.error(error);
+        }
+    };
+    socket.on('productoEliminado', ({ cartId, productId }) => {
+        logger.info(`Producto eliminado del carrito ${cartId}: ${productId}`);
+        io.emit('productoEliminado', { cartId, productId });
+    });
+
+    sendProductsUpdate();
+
+    socket.on("productDeleted", async function (productId) {
+        try {
+            await Product.findByIdAndDelete(productId);
+            sendProductsUpdate();
+        } catch (error) {
+            logger.error(error);
+        }
+    });
+
+    socket.on("productAdded", async function (newProduct) {
+        try {
+            await Product.create(newProduct);
+            sendProductsUpdate();
+        } catch (error) {
+            logger.error(error);
+        }
+    });
+});
+
 serverHTTP.listen(PORT, () => {
     logger.info(`Servidor escuchando en http://localhost:${PORT}`);
 });
 
-mongoose.connect(MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(MONGO_URL, {
+});
+
 const db = mongoose.connection;
 
 db.on('error', logger.error.bind(logger, 'Error de conexión a MongoDB:'));
 db.once('open', () => {
     logger.info('Conexión exitosa a MongoDB');
 });
+
+app.use('/api', productosRoutes);
