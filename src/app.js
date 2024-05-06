@@ -149,7 +149,9 @@ serverHTTP.listen(PORT, () => {
     logger.info(`Servidor escuchando en http://localhost:${PORT}`);
 });
 
-mongoose.connect(MONGO_URL);
+mongoose.connect(MONGO_URL, {
+    socketTimeoutMS: 50000 
+});
 
 const db = mongoose.connection;
 
