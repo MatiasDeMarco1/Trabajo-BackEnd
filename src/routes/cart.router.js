@@ -5,7 +5,6 @@ const fs = require('fs').promises;
 const Cart = require('../mongo/models/Carts');
 const Product = require('../mongo/models/Product');
 const Ticket = require('../mongo/models/Ticket');
-const cartController = require('../Controllers/cartcController');
 const isAuthenticated = require('../middleware/auth.middleware')
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
