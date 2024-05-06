@@ -69,7 +69,7 @@ exports.initializePassportLocal = () => {
         { usernameField: 'email', passwordField: 'password' },
         async (email, password, done) => {
             try {
-                const user = await User.findOne({ email }).maxTimeMS(1000).exec()
+                const user = await User.find({ email }).maxTimeMS(1000).exec()
                 if (!user) {
                     return done(null, false, { message: 'Email o contraseña incorrectos' });
                 }
