@@ -14,7 +14,6 @@ const logger = require('./utils/logger.js');
 const nodemailer = require('nodemailer');
 const swaggerConfig = require('./Swagger/swaggerConfig');
 
-const productosRoutes = require("./routes/product.router.js");
 const Product = require("./mongo/models/Product.js");
 const mockingProductsRoute = require('./routes/mockingProductsRouter');
 const productRouter = require("./routes/product.router.js");
@@ -152,8 +151,7 @@ serverHTTP.listen(PORT, () => {
     logger.info(`Servidor escuchando en http://localhost:${PORT}`);
 });
 
-mongoose.connect(MONGO_URL, {
-});
+mongoose.connect(MONGO_URL);
 
 const db = mongoose.connection;
 
@@ -161,5 +159,3 @@ db.on('error', logger.error.bind(logger, 'Error de conexión a MongoDB:'));
 db.once('open', () => {
     logger.info('Conexión exitosa a MongoDB');
 });
-
-app.use('/api', productosRoutes);
