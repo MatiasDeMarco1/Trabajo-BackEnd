@@ -154,7 +154,7 @@ mongoose.connect(MONGO_URL);
 
 const db = mongoose.connection;
 
-db.on('error', logger.error.bind(logger, 'Error de conexión a MongoDB:'));
+db.on('error', logger.error.bind(console, 'Error de conexión a MongoDB:'));
 db.once('open', () => {
     logger.info('Conexión exitosa a MongoDB');
 });
