@@ -144,7 +144,7 @@ io.on("connection", (socket) => {
         }
     });
 });
-
+console.log(MONGO_URL)
 serverHTTP.listen(PORT, () => {
     logger.info(`Servidor escuchando en http://localhost:${PORT}`);
 });
