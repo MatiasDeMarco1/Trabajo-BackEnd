@@ -124,7 +124,7 @@ Crouter.post('/webhook/respuesta', async (req, res) => {
         res.status(200).end();
     } catch (error) {
         console.error('Error en el webhook de Stripe:', error);
-        res.status(500).send('Error interno del servidor');
+        res.status(500).send('Error interno del servidor hola jaja');
     }
 });
 async function processStripeWebhook(event) {
@@ -259,7 +259,7 @@ async function processStripeWebhook(event) {
 }
 
 
-Crouter.post('/:cid/purchase', async (req, res) => {
+/* Crouter.post('/:cid/purchase', async (req, res) => {
     try {
         const cartId = req.params.cid;
         const cart = await Cart.findById(cartId);
@@ -300,12 +300,9 @@ Crouter.post('/:cid/purchase', async (req, res) => {
         return res.status(200).json({ status: 'success', message: 'Compra finalizada con éxito.', data: ticket });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ status: 'error', message: 'Error interno del servidor.' });
+        return res.status(500).json({ status: 'error', message: 'Error interno del servidor hola jaja.' });
     }
-});
-
-module.exports = Crouter;
-
+}); */
 
 Crouter.get('/', async (req, res) => {
     try {
