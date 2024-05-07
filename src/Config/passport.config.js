@@ -66,19 +66,31 @@ exports.initializePassportLocal = () => {
         }
     ));
     passport.use('local.login', new LocalStrategy(
-        { usernameField: 'email', passwordField: 'password' },
-        async (email, password, done) => {
+        { usernameField: 'email', passReqToCallback: true },
+        async (req, email, password, done) => {
             try {
-                const user = await User.find({ email }).maxTimeMS(1000).exec()
+                const user = await User.findOne({ email });
                 if (!user) {
-                    return done(null, false, { message: 'Email o contraseña incorrectos' });
+                    logger.error('Usuario no encontrado');
+                    return done(null, false, 'Email o contraseña equivocado');
                 }
                 const passwordMatch = await bcrypt.compare(password, user.password);
                 if (!passwordMatch) {
-                    return done(null, false, { message: 'Email o contraseña incorrectos' });
+                    logger.error('Contraseña incorrecta');
+                    return done(null, false, 'Email o contraseña equivocado');
                 }
+                try {
+                    await User.findOneAndUpdate(
+                        { email: user.email },
+                        { last_connection: new Date() }
+                    );
+                } catch (error) {
+                    console.error('Error al actualizar last_connection:', error);
+                }
+                console.log('Inicio de sesión exitoso');
                 return done(null, user);
             } catch (error) {
+                console.error('Error durante el inicio de sesión:', error);
                 return done(error);
             }
         }
