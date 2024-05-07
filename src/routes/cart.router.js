@@ -118,13 +118,11 @@ Crouter.post('/webhook/respuesta', async (req, res) => {
     try {
         const sig = req.headers['stripe-signature'];
         const event = req.body;
-        console.log("body:", req.body)
-        console.log("tipo de evento:", event.type)
         await processStripeWebhook(event);
         res.status(200).end();
     } catch (error) {
         console.error('Error en el webhook de Stripe:', error);
-        res.status(500).send('Error interno del servidor hola jaja');
+        res.status(500).send('Error interno del servidor hola hola');
     }
 });
 async function processStripeWebhook(event) {
@@ -139,8 +137,6 @@ async function processStripeWebhook(event) {
             return;
         }
         const customerEmail = session.customer_details.email;
-        console.log("esto contiene session:", session)
-        console.log("este es el email que esto mandando", customerEmail)
         const products = cart.products;
         let totalAmount = 0;
         for (const item of products) {
