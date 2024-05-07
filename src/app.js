@@ -64,7 +64,7 @@ app.use(session({
         mongoUrl: "mongodb+srv://Matias25:19742013Nob@cluster0.yfm42kk.mongodb.net/Ecomerce",
         ttl: 15000000000,
     }),
-    secret: SESSION_SECRET,
+    secret: "secretkey",
     resave: false,
     saveUninitialized: false
 }));
