@@ -101,7 +101,7 @@ async function sendNotificationEmail(email, message, subject) {
             service: 'gmail',
             auth: {
                 user: 'demarcomatias25@gmail.com', 
-                pass: '19742013Nob' 
+                pass: 'vcmk xubz umwm lyef' 
             }
         });
 
