@@ -78,7 +78,7 @@ async function sendPasswordResetEmail(email, token) {
                         <h1>Restablecer Contraseña</h1>
                         <p>Hola,</p>
                         <p>Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
-                        <p><a class="button" href="https://preentrega-backend-production.up.railway.app/api/sessions/reset-password/${token}">Restablecer Contraseña</a></p>
+                        <p><a class="button" href="https://trabajo-backend-production.up.railway.app/api/sessions/reset-password/${token}">Restablecer Contraseña</a></p>
                         <p>Si no solicitaste restablecer tu contraseña, ignora este correo.</p>
                         <p>Saludos,</p>
                         <p>Tu equipo</p>
