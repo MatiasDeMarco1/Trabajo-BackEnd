@@ -145,8 +145,8 @@ io.on("connection", (socket) => {
     });
 });
 
-serverHTTP.listen(PORT, () => {
-    logger.info(`Servidor escuchando en http://localhost:${PORT}`);
+serverHTTP.listen(8080, () => {
+    logger.info(`Servidor escuchando en http://localhost:8080`);
 });
 
 mongoose.connect(MONGO_URL);
