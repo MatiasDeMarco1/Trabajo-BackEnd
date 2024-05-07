@@ -24,9 +24,9 @@ const paymentRouter = require("./routes/payments.router.js");
 const path = require('path');
 
 const app = express();
-const PORT = process.env.PORT || 8080
-const MONGO_URL = process.env.MONGO_URL;
-const SESSION_SECRET = process.env.SESSION_SECRET;
+const PORT = config.PORT;
+const MONGO_URL = config.MONGO_URL;
+const SESSION_SECRET = config.SESSION_SECRET;
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 
@@ -59,23 +59,15 @@ app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.use(express.static('public'));
 
-mongoose.connect(MONGO_URL);
-
-const db = mongoose.connection;
-
-db.on('error', logger.error.bind(logger, 'Error de conexión a MongoDB:'));
-db.once('open', () => {
-    logger.info('Conexión exitosa a MongoDB');
-    app.use(session({
-        store: MongoStore.create({
-            mongoUrl: MONGO_URL,
-            ttl: 15000000000,
-        }),
-        secret: SESSION_SECRET,
-        resave: false,
-        saveUninitialized: false
-    }));
-});
+app.use(session({
+    store: MongoStore.create({
+        mongoUrl: MONGO_URL,
+        ttl: 15000000000,
+    }),
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -152,9 +144,16 @@ io.on("connection", (socket) => {
         }
     });
 });
-console.log(PORT)
+
 serverHTTP.listen(PORT, () => {
     logger.info(`Servidor escuchando en http://localhost:${PORT}`);
 });
 
+mongoose.connect(MONGO_URL);
 
+const db = mongoose.connection;
+
+db.on('error', logger.error.bind(logger, 'Error de conexión a MongoDB:'));
+db.once('open', () => {
+    logger.info('Conexión exitosa a MongoDB');
+});
