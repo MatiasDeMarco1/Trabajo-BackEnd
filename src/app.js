@@ -24,7 +24,7 @@ const paymentRouter = require("./routes/payments.router.js");
 const path = require('path');
 
 const app = express();
-const PORT = config.PORT;
+const PORT = 8080
 const MONGO_URL = config.MONGO_URL;
 const SESSION_SECRET = config.SESSION_SECRET;
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -145,8 +145,8 @@ io.on("connection", (socket) => {
     });
 });
 
-serverHTTP.listen(8080, () => {
-    logger.info(`Servidor escuchando en http://localhost:8080`);
+serverHTTP.listen(PORT, () => {
+    logger.info(`Servidor escuchando en http://localhost:${PORT}`);
 });
 
 mongoose.connect(MONGO_URL);
