@@ -95,13 +95,12 @@ async function sendPasswordResetEmail(email, token) {
     }
 }
 
-// Envia un correo electrónico de notificación
 async function sendNotificationEmail(email, message, subject) {
     try {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
-                user: 'juanfraa032@gmail.com', 
+                user: 'demarcomatias25@gmail.com', 
                 pass: 'uoma cair nlvx uxrs' 
             }
         });
