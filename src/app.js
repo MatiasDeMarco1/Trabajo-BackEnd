@@ -10,9 +10,10 @@ const passport = require('passport');
 const User = require('./mongo/models/users');
 const sessionController = require('./Controllers/sessionController.js');
 const config = require('./Config/config.js');
-const logger = require('./utils/logger.js');
+const {logger} = require('./utils/logger.js');
 const nodemailer = require('nodemailer');
 const swaggerConfig = require('./Swagger/swaggerConfig');
+
 
 const Product = require("./mongo/models/Product.js");
 const mockingProductsRoute = require('./routes/mockingProductsRouter');
@@ -24,7 +25,7 @@ const paymentRouter = require("./routes/payments.router.js");
 const path = require('path');
 
 const app = express();
-const PORT = 8080
+const PORT = config.PORT;
 const MONGO_URL = config.MONGO_URL;
 const SESSION_SECRET = config.SESSION_SECRET;
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -61,15 +62,13 @@ app.use(express.static('public'));
 
 app.use(session({
     store: MongoStore.create({
-        mongoUrl:MONGO_URL, 
-        mongoOptions: {
-        },
+        mongoUrl: MONGO_URL,
         ttl: 15000000000,
     }),
     secret: SESSION_SECRET,
-    resave: false, 
+    resave: false,
     saveUninitialized: false
-}))
+}));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -151,11 +150,11 @@ serverHTTP.listen(PORT, () => {
     logger.info(`Servidor escuchando en http://localhost:${PORT}`);
 });
 
-mongoose.connect("mongodb+srv://Matias25:19742013Nob@cluster0.yfm42kk.mongodb.net/Ecomerce");
+mongoose.connect(MONGO_URL);
 
 const db = mongoose.connection;
 
-db.on('error', logger.error(console, 'Error de conexión a MongoDB:'));
+db.on('error', logger.error.bind(logger, 'Error de conexión a MongoDB:'));
 db.once('open', () => {
     logger.info('Conexión exitosa a MongoDB');
 });
