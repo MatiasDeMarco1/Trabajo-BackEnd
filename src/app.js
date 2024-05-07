@@ -156,4 +156,13 @@ const db = mongoose.connection;
 db.on('error', logger.error.bind(logger, 'Error de conexión a MongoDB:'));
 db.once('open', () => {
     logger.info('Conexión exitosa a MongoDB');
+    app.use(session({
+        store: MongoStore.create({
+            mongoUrl: MONGO_URL,
+            ttl: 15000000000,
+        }),
+        secret: SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false
+    }));
 });
