@@ -41,7 +41,7 @@ exports.initializePassportLocal = () => {
                 if (!first_name || !last_name || !email || !password) {
                     return done(null, false, 'Faltan completar campos obligatorios');
                 }
-                const userFound = User.findOne({ email });
+                const userFound = await User.findOne({ email });
                 if (userFound) {
                     return done(null, false, 'Ya existe el usuario');
                 }
@@ -69,7 +69,7 @@ exports.initializePassportLocal = () => {
         { usernameField: 'email', passReqToCallback: true },
         async (req, email, password, done) => {
             try {
-                const user =  User.findOne({ email });
+                const user = await User.findOne({ email });
                 if (!user) {
                     logger.error('Usuario no encontrado');
                     return done(null, false, 'Email o contraseña equivocado');
