@@ -101,7 +101,7 @@ Crouter.post('/:cid/purchase', async (req, res) => {``
                 },
             ],
             mode: 'payment',
-            success_url: 'https://preentrega-backend-production.up.railway.app/products', 
+            success_url: 'https://trabajo-backend-production.up.railway.app/products', 
             cancel_url: 'https://tu-web.com/cancel',
             metadata: {
                 cartId: cartId
