@@ -21,7 +21,6 @@ const productRouter = require("./routes/product.router.js");
 const cartsRouter = require("./routes/cart.router.js");
 const sessionRouter = require("./routes/session.router.js");
 const viewRouter = require("./routes/view.router.js");
-const paymentRouter = require("./routes/payments.router.js");
 const path = require('path');
 
 const app = express();
@@ -89,7 +88,6 @@ app.use("/api/products", productRouter);
 app.use("/api/carts", cartsRouter);
 app.use('/api/sessions', sessionRouter);
 app.use('/', viewRouter);
-app.use('/api/payments', paymentRouter)
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/mockingproducts', mockingProductsRoute);
 
