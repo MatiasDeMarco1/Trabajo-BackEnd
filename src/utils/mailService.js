@@ -106,7 +106,7 @@ async function sendNotificationEmail(email, message, subject) {
         });
 
         const mailOptions = {
-            from: 'juanfraa032@gmail.com', 
+            from: 'demarcomatias25@gmail.com', 
             to: email,
             subject: subject,
             html: message 
