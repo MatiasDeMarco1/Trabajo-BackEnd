@@ -7,6 +7,7 @@ const Product = require('../mongo/models/Product');
 const Ticket = require('../mongo/models/Ticket');
 const isAuthenticated = require('../middleware/auth.middleware')
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const mailService = require("../utils/mailService")
 
 async function generateUniqueCode() {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
