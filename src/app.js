@@ -24,9 +24,9 @@ const paymentRouter = require("./routes/payments.router.js");
 const path = require('path');
 
 const app = express();
-const PORT = config.PORT;
-const MONGO_URL = config.MONGO_URL;
-const SESSION_SECRET = config.SESSION_SECRET;
+const PORT = process.env.PORT || 8080
+const MONGO_URL = process.env.MONGO_URL;
+const SESSION_SECRET = process.env.SESSION_SECRET;
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 
