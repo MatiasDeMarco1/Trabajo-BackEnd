@@ -59,6 +59,24 @@ app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.use(express.static('public'));
 
+mongoose.connect(MONGO_URL);
+
+const db = mongoose.connection;
+
+db.on('error', logger.error.bind(logger, 'Error de conexión a MongoDB:'));
+db.once('open', () => {
+    logger.info('Conexión exitosa a MongoDB');
+    app.use(session({
+        store: MongoStore.create({
+            mongoUrl: MONGO_URL,
+            ttl: 15000000000,
+        }),
+        secret: SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false
+    }));
+});
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -139,20 +157,4 @@ serverHTTP.listen(PORT, () => {
     logger.info(`Servidor escuchando en http://localhost:${PORT}`);
 });
 
-mongoose.connect(MONGO_URL);
 
-const db = mongoose.connection;
-
-db.on('error', logger.error.bind(logger, 'Error de conexión a MongoDB:'));
-db.once('open', () => {
-    logger.info('Conexión exitosa a MongoDB');
-    app.use(session({
-        store: MongoStore.create({
-            mongoUrl: MONGO_URL,
-            ttl: 15000000000,
-        }),
-        secret: SESSION_SECRET,
-        resave: false,
-        saveUninitialized: false
-    }));
-});
