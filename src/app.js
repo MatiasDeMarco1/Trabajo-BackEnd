@@ -59,16 +59,6 @@ app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.use(express.static('public'));
 
-app.use(session({
-    store: MongoStore.create({
-        mongoUrl: MONGO_URL,
-        ttl: 15000000000,
-    }),
-    secret: SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false
-}));
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
