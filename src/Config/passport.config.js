@@ -8,7 +8,7 @@ exports.initializePassportGitHub = () => {
     passport.use(new GitHubStrategy({
         clientID: 'Iv1.bae1b407c6a21b7a',
         clientSecret: '9efac3cfd1014b4e04b82be282ea631bc97ba8b2',
-        callbackURL: 'http://localhost:8080/api/sessions/githubcallback',
+        callbackURL: 'https://trabajo-backend-production.up.railway.app/api/sessions/githubcallback',
     }, async (accessToken, refreshToken, profile, done) => {
         try {
             const githubEmail = profile.emails ? profile.emails[0].value : null;
