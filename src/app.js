@@ -155,7 +155,7 @@ mongoose.connect("mongodb+srv://Matias25:19742013Nob@cluster0.yfm42kk.mongodb.ne
 
 const db = mongoose.connection;
 
-db.on('error', logger.error.bind(console, 'Error de conexión a MongoDB:'));
+db.on('error', logger.error(console, 'Error de conexión a MongoDB:'));
 db.once('open', () => {
     logger.info('Conexión exitosa a MongoDB');
 });
