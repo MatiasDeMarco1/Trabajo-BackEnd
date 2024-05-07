@@ -61,7 +61,7 @@ app.use(express.static('public'));
 
 app.use(session({
     store: MongoStore.create({
-        mongoUrl: MONGO_URL,
+        mongoUrl: "mongodb+srv://Matias25:19742013Nob@cluster0.yfm42kk.mongodb.net/Ecomerce",
         ttl: 15000000000,
     }),
     secret: SESSION_SECRET,
@@ -149,7 +149,7 @@ serverHTTP.listen(PORT, () => {
     logger.info(`Servidor escuchando en http://localhost:${PORT}`);
 });
 
-mongoose.connect(MONGO_URL);
+mongoose.connect("mongodb+srv://Matias25:19742013Nob@cluster0.yfm42kk.mongodb.net/Ecomerce");
 
 const db = mongoose.connection;
 
