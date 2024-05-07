@@ -61,13 +61,15 @@ app.use(express.static('public'));
 
 app.use(session({
     store: MongoStore.create({
-        mongoUrl: "mongodb+srv://Matias25:19742013Nob@cluster0.yfm42kk.mongodb.net/Ecomerce",
+        mongoUrl:MONGO_URL, 
+        mongoOptions: {
+        },
         ttl: 15000000000,
     }),
-    secret: "secretkey",
-    resave: false,
+    secret: SESSION_SECRET,
+    resave: false, 
     saveUninitialized: false
-}));
+}))
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -153,7 +155,7 @@ mongoose.connect("mongodb+srv://Matias25:19742013Nob@cluster0.yfm42kk.mongodb.ne
 
 const db = mongoose.connection;
 
-db.on('error', logger.error.bind(logger, 'Error de conexión a MongoDB:'));
+db.on('error', logger.error.bind(console, 'Error de conexión a MongoDB:'));
 db.once('open', () => {
     logger.info('Conexión exitosa a MongoDB');
 });
