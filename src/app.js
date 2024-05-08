@@ -16,6 +16,7 @@ const swaggerConfig = require('./Swagger/swaggerConfig');
 
 
 const Product = require("./mongo/models/Product.js");
+const premiumRouter = require('./routes/premium.router.js')
 const mockingProductsRoute = require('./routes/mockingProductsRouter');
 const productRouter = require("./routes/product.router.js");
 const cartsRouter = require("./routes/cart.router.js");
@@ -90,6 +91,7 @@ app.use('/api/sessions', sessionRouter);
 app.use('/', viewRouter);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/mockingproducts', mockingProductsRoute);
+app.use('/api/users', premiumRouter);
 
 app.set("io", io);
 
