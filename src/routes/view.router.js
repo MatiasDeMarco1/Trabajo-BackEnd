@@ -7,12 +7,12 @@ const User = require('../mongo/models/users');
 
 
 router.get('/login', (req, res) => {
-    res.render('loginForm');
+    res.render('loginform');
 });
 
 
 router.get('/register', (req, res) => {
-    res.render('registerForm');
+    res.render('registerform');
 });
 
 
