@@ -12,6 +12,7 @@ exports.initializePassportGitHub = () => {
     }, async (accessToken, refreshToken, profile, done) => {
         try {
             const githubEmail = profile.emails ? profile.emails[0].value : null;
+            console.log("este es el mail que intente usar:", githubEmail)
             const existingUser = await User.findOne({ email: githubEmail });
             if (existingUser) {
                 return done(null, existingUser);
@@ -20,6 +21,7 @@ exports.initializePassportGitHub = () => {
                 const hashedPassword = await bcrypt.hash(password, 10);
                 const newUser = new User({
                     first_name: profile.displayName,
+                    last_name:"usuarioGithub",
                     email: githubEmail,
                     password: hashedPassword,
                     role: "user"
