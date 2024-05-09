@@ -7,7 +7,7 @@ const User = require('../mongo/models/users');
 exports.initializePassportGitHub = () => {
     passport.use(new GitHubStrategy({
         clientID: 'Iv1.2f2c33e249900bb5',
-        clientSecret: '9efac3cfd1014b4e04b82be282ea631bc97ba8b2',
+        clientSecret: '5eec793072f2b563001f9f594dba49fc053cd82b',
         callbackURL: 'https://trabajo-backend-production.up.railway.app/api/sessions/githubcallback',
     }, async (accessToken, refreshToken, profile, done) => {
         try {
