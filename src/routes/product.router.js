@@ -122,7 +122,7 @@ Prouter.post('/', async (req, res) => {
         }
         const user = req.user;
         const userFromDB = await User.findById(user._id);
-        if (userFromDB.role === 'premium') {
+        if (userFromDB.role === 'premium' || userFromDB.role === 'admin' ) {
             const productData = {
                 title,
                 description,  
