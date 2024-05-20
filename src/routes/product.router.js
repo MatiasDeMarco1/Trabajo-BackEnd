@@ -142,7 +142,6 @@ Prouter.post('/', async (req, res) => {
             return res.status(403).json({ status: "error", message: "No está autorizado para crear productos" });
         }
     } catch (error) {
-        logger.error(error);
         res.status(500).json({ status: "error", message: customizeError('INTERNAL_SERVER_ERROR') });
     }
 });
