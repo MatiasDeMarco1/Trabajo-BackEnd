@@ -4,6 +4,7 @@ const LocalStrategy = require('passport-local').Strategy;
 const bcrypt = require('bcrypt');
 const User = require('../mongo/models/users');
 const { logger } = require('../utils/logger');
+const mailService = require("../utils/mailService");
 
 exports.initializePassportGitHub = () => {
     passport.use(new GitHubStrategy({
@@ -40,19 +41,25 @@ exports.initializePassportLocal = () => {
         { usernameField: 'email', passReqToCallback: true },
         async (req, email, password, done) => {
             try {
-                const { first_name, last_name, age } = req.body;
+                const { first_name, last_name, age, secret_word } = req.body;
+
                 if (!first_name || !last_name || !email || !password) {
                     return done(null, false, 'Faltan completar campos obligatorios');
                 }
+
                 const userFound = await User.findOne({ email });
                 if (userFound) {
                     return done(null, false, 'Ya existe el usuario');
                 }
+
                 const hashedPassword = await bcrypt.hash(password, 10);
+
                 let role = 'user';
+
                 if (email === 'adminCoder@coder.com') {
                     role = 'admin';
                 }
+
                 const newUser = {
                     first_name,
                     last_name,
@@ -61,7 +68,23 @@ exports.initializePassportLocal = () => {
                     password: hashedPassword,
                     role
                 };
+
                 const result = await User.create(newUser);
+                    const message = `
+                    <html>
+                    <head>
+                    </head>
+                    <body>
+                        <p>Hola ${first_name} ${last_name},</p>
+                        <p>¡Gracias por registrarte en nuestro sitio!</p>
+                        <p>Esperamos que disfrutes de nuestros servicios.</p>
+                        <p>Saludos,</p>
+                    </body>
+                    </html>
+                `;
+                const subject = 'Registro exitoso';
+                await mailService.sendNotificationEmail(email, message, subject);
+                
                 return done(null, result);
             } catch (error) {
                 return done(error);

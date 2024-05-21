@@ -2,8 +2,7 @@ const nodemailer = require('nodemailer');
 const User = require('../mongo/models/users');
 const {logger} = require("../utils/logger")
 
-//------------------------------------------------------------------------------------------------------------------
-// Envia un correo electrónico para restablecer la contraseña del usuario
+
 async function sendPasswordResetEmail(email, token) {
     try {
         const user = await User.findOne({ email });
