@@ -1,0 +1,140 @@
+swagger: "2.0"
+info:
+  description: "API para la gestión de usuarios."
+  version: "1.0.0"
+  title: "Users API"
+basePath: "/"
+schemes:
+  - "http"
+  - "https"
+paths:
+  /session/register:
+    post:
+      summary: "Registrar un nuevo usuario"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/NewUser"
+      responses:
+        201:
+          description: "Usuario registrado exitosamente"
+        400:
+          description: "Error en los datos del usuario"
+
+  /session/login:
+    post:
+      summary: "Iniciar sesión de usuario"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/LoginUser"
+      responses:
+        200:
+          description: "Inicio de sesión exitoso"
+        401:
+          description: "Credenciales incorrectas"
+
+  /session/github/callback:
+    get:
+      summary: "Callback para autenticación con GitHub"
+      responses:
+        200:
+          description: "Autenticación con GitHub exitosa"
+        401:
+          description: "Autenticación con GitHub fallida"
+
+  /session/logout:
+    post:
+      summary: "Cerrar sesión de usuario"
+      responses:
+        200:
+          description: "Cierre de sesión exitoso"
+
+  /session/restorepass:
+    get:
+      summary: "Restaurar contraseña"
+      parameters:
+        - name: "email"
+          in: "query"
+          required: true
+          type: "string"
+          description: "Correo electrónico del usuario"
+      responses:
+        200:
+          description: "Correo de restauración de contraseña enviado"
+        404:
+          description: "Correo no encontrado"
+
+  /session/updatePass:
+    put:
+      summary: "Actualizar contraseña"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/UpdatePass"
+      responses:
+        200:
+          description: "Contraseña actualizada"
+        400:
+          description: "Error en la actualización de la contraseña"
+
+  /session/current:
+    get:
+      summary: "Obtener la información del usuario actual"
+      responses:
+        200:
+          description: "Información del usuario actual"
+          schema:
+            $ref: "#/definitions/User"
+
+definitions:
+  NewUser:
+    type: "object"
+    required:
+      - username
+      - email
+      - password
+    properties:
+      username:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+  LoginUser:
+    type: "object"
+    required:
+      - email
+      - password
+    properties:
+      email:
+        type: "string"
+      password:
+        type: "string"
+  UpdatePass:
+    type: "object"
+    required:
+      - oldPassword
+      - newPassword
+    properties:
+      oldPassword:
+        type: "string"
+      newPassword:
+        type: "string"
+  User:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      username:
+        type: "string"
+      email:
+        type: "string"
+      role:
+        type: "string"

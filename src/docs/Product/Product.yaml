@@ -1,0 +1,187 @@
+swagger: "2.0"
+info:
+  description: "API para la gestión de productos."
+  version: "1.0.0"
+  title: "Products API"
+basePath: "/"
+schemes:
+  - "http"
+  - "https"
+paths:
+  /products:
+    get:
+      summary: "Obtener todos los productos"
+      parameters:
+        - name: "page"
+          in: "query"
+          type: "integer"
+          description: "Página de resultados"
+        - name: "limit"
+          in: "query"
+          type: "integer"
+          description: "Número de resultados por página"
+      responses:
+        200:
+          description: "Lista de productos"
+          schema:
+            type: "object"
+            properties:
+              status:
+                type: "string"
+              payload:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Product"
+              totalPage:
+                type: "integer"
+              prevpage:
+                type: "integer"
+                x-nullable: true
+              nextPage:
+                type: "integer"
+                x-nullable: true
+              page:
+                type: "integer"
+              hasprevpage:
+                type: "boolean"
+              hasnextpage:
+                type: "boolean"
+              prevLink:
+                type: "string"
+                x-nullable: true
+              nextLink:
+                type: "string"
+                x-nullable: true
+    post:
+      summary: "Crear un nuevo producto"
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/NewProduct"
+      responses:
+        201:
+          description: "Producto creado exitosamente"
+        400:
+          description: "Campos faltantes"
+
+  /products/{pid}:
+    get:
+      summary: "Obtener producto por ID"
+      parameters:
+        - name: "pid"
+          in: "path"
+          required: true
+          type: "string"
+          description: "ID del producto"
+      responses:
+        200:
+          description: "Detalle del producto"
+          schema:
+            $ref: "#/definitions/Product"
+        404:
+          description: "Producto no encontrado"
+    put:
+      summary: "Actualizar un producto"
+      parameters:
+        - name: "pid"
+          in: "path"
+          required: true
+          type: "string"
+          description: "ID del producto"
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            $ref: "#/definitions/UpdateProduct"
+      responses:
+        200:
+          description: "Producto actualizado"
+        404:
+          description: "Producto no encontrado"
+    delete:
+      summary: "Eliminar un producto"
+      parameters:
+        - name: "pid"
+          in: "path"
+          required: true
+          type: "string"
+          description: "ID del producto"
+      responses:
+        200:
+          description: "Producto eliminado"
+        404:
+          description: "Producto no encontrado"
+        403:
+          description: "No tienes permiso para eliminar este producto"
+
+definitions:
+  Product:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      title:
+        type: "string"
+      description:
+        type: "string"
+      code:
+        type: "string"
+      price:
+        type: "number"
+      stock:
+        type: "number"
+      category:
+        type: "string"
+      thumbnails:
+        type: "array"
+        items:
+          type: "string"
+      owner:
+        type: "string"
+  NewProduct:
+    type: "object"
+    required:
+      - title
+      - description
+      - code
+      - price
+      - stock
+      - category
+    properties:
+      title:
+        type: "string"
+      description:
+        type: "string"
+      code:
+        type: "string"
+      price:
+        type: "number"
+      stock:
+        type: "number"
+      category:
+        type: "string"
+      thumbnails:
+        type: "array"
+        items:
+          type: "string"
+  UpdateProduct:
+    type: "object"
+    properties:
+      title:
+        type: "string"
+      description:
+        type: "string"
+      code:
+        type: "string"
+      price:
+        type: "number"
+      stock:
+        type: "number"
+      category:
+        type: "string"
+      thumbnails:
+        type: "array"
+        items:
+          type: "string"

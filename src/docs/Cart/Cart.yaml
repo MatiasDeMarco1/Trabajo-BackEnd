@@ -1,0 +1,169 @@
+swagger: "2.0"
+info:
+  description: "API para la gestión de carritos de compras."
+  version: "1.0.0"
+  title: "Cart API"
+basePath: "/"
+schemes:
+  - "http"
+  - "https"
+paths:
+  /cart/{uid}:
+    post:
+      summary: "Crear un carrito"
+      parameters:
+        - name: "uid"
+          in: "path"
+          required: true
+          type: "string"
+          description: "ID del usuario"
+      responses:
+        201:
+          description: "Carrito creado exitosamente"
+    get:
+      summary: "Obtener el carrito por ID de usuario"
+      parameters:
+        - name: "uid"
+          in: "path"
+          required: true
+          type: "string"
+          description: "ID del usuario"
+      responses:
+        200:
+          description: "Carrito del usuario"
+          schema:
+            $ref: "#/definitions/Cart"
+
+  /cart/{cid}/product/{pid}:
+    post:
+      summary: "Agregar producto al carrito"
+      parameters:
+        - name: "cid"
+          in: "path"
+          required: true
+          type: "string"
+          description: "ID del carrito"
+        - name: "pid"
+          in: "path"
+          required: true
+          type: "string"
+          description: "ID del producto"
+      responses:
+        200:
+          description: "Producto agregado al carrito"
+        404:
+          description: "Carrito o producto no encontrado"
+
+  /cart/{cid}/purchase:
+    post:
+      summary: "Realizar la compra del carrito"
+      parameters:
+        - name: "cid"
+          in: "path"
+          required: true
+          type: "string"
+          description: "ID del carrito"
+      responses:
+        200:
+          description: "Compra realizada exitosamente"
+        400:
+          description: "Error en la compra"
+
+  /cart/webhook/respuesta:
+    post:
+      summary: "Manejar la respuesta del webhook de Stripe"
+      parameters:
+        - name: "body"
+          in: "body"
+          schema:
+            type: "object"
+      responses:
+        200:
+          description: "Webhook manejado correctamente"
+
+  /cart/{cid}/products/{pid}:
+    delete:
+      summary: "Eliminar producto del carrito"
+      parameters:
+        - name: "cid"
+          in: "path"
+          required: true
+          type: "string"
+          description: "ID del carrito"
+        - name: "pid"
+          in: "path"
+          required: true
+          type: "string"
+          description: "ID del producto"
+      responses:
+        200:
+          description: "Producto eliminado del carrito"
+        404:
+          description: "Carrito o producto no encontrado"
+
+  /cart/{cid}:
+    delete:
+      summary: "Vaciar el carrito"
+      parameters:
+        - name: "cid"
+          in: "path"
+          required: true
+          type: "string"
+          description: "ID del carrito"
+      responses:
+        200:
+          description: "Carrito vaciado"
+        404:
+          description: "Carrito no encontrado"
+
+  /cart:
+    get:
+      summary: "Obtener todos los carritos"
+      responses:
+        200:
+          description: "Lista de carritos"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Cart"
+
+definitions:
+  Cart:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      userId:
+        type: "string"
+      products:
+        type: "array"
+        items:
+          type: "object"
+          properties:
+            productId:
+              type: "string"
+            quantity:
+              type: "integer"
+  Product:
+    type: "object"
+    properties:
+      _id:
+        type: "string"
+      title:
+        type: "string"
+      description:
+        type: "string"
+      code:
+        type: "string"
+      price:
+        type: "number"
+      stock:
+        type: "number"
+      category:
+        type: "string"
+      thumbnails:
+        type: "array"
+        items:
+          type: "string"
+      owner:
+        type: "string"
