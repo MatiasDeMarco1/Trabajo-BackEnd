@@ -11,6 +11,7 @@
             <p>Precio: {{this._doc.price}}</p>
             {{#if ../isAdminFalse}}
                         <button onclick="addToCart('{{this._doc._id}}', '{{../user._id}}')"  class="add_cart">Agregar al carrito</button>
+                        <button onclick="verDetalle('{{this._doc._id}}')" class="btn btn-primary">Ver detalle del producto</button>
             {{/if}}
             {{#if ../isAdmin}}
                 <button onclick="updateProduct('{{this._doc._id}}')">Actualizar producto</button>
@@ -53,6 +54,25 @@
             </form>
         </div>
     {{/if }}
+    {{#if isPremium}}
+            <div >
+                <form method="POST" action="/products">
+                    <label for="title">Título:</label>
+                    <input type="text" id="title" name="title" required><br>
+                    <label for="price">Precio:</label>
+                    <input type="number" id="price" name="price" required><br>
+                    <label for="description">Descripción:</label>
+                    <textarea id="description" name="description" required></textarea><br>
+                    <label for="code">Código:</label>
+                    <input type="text" id="code" name="code" required><br>
+                    <label for="stock">Stock:</label>
+                    <input type="number" id="stock" name="stock" required><br>
+                    <label for="category">Categoría:</label>
+                    <input type="text" id="category" name="category" required><br>
+                    <button type="submit" onclick="addProduct()">Agregar Producto</button>
+                </form>
+            </div>
+        {{/if }}
     {{#if isAdminFalse}}
         <button onclick="redirectToCart('{{user._id}}')">Ir al carrito</button>
     {{/if}}

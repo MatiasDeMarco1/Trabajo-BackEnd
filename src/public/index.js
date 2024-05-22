@@ -1,34 +1,4 @@
 
-/* document.addEventListener("DOMContentLoaded", function () {
-    const socket = io();
-    socket.on("updateProducts", (updatedProducts) => {
-        updateProductList(updatedProducts);
-    });
-    function updateProductList(products) {
-        const realtimeProductList = document.getElementById("realtimeProductList");
-        realtimeProductList.innerHTML = "";
-        products.forEach((product) => {
-            const listItem = document.createElement("li");
-            listItem.classList.add("product");
-            listItem.dataset.productId = product._id; 
-            const buttons = `
-                <button onclick="addToCart('${product._id}')">Agregar al carrito</button>
-                <button onclick="updateProduct('${product._id}')">Actualizar producto</button>
-                <button onclick="deleteProduct('${product._id}')">Eliminar producto</button>
-            `;
-            listItem.innerHTML = `
-                <h3>${product.title}</h3>
-                <p>${product.description}</p>
-                <p>Precio: ${product.price}</p>
-                ${isAdmin ? buttons : ''}
-            `;
-            realtimeProductList.appendChild(listItem);
-        });
-    }
-});
- */
-
-
 function deleteProduct(productId) {
     if (confirm("¿Estás seguro de que deseas eliminar este producto?")) {
         fetch(`/products/${productId}`, {
@@ -128,7 +98,9 @@ async function updateProducts(updatedProducts) {
         realtimeProductList.appendChild(listItem);
     });
 }
-
+function verDetalle(productId) {
+    window.location.href = "/products/itemDetail/" + productId;
+}
 
 async function addToCart(productId, userId) {
     try {

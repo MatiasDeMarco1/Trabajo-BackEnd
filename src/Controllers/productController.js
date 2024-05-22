@@ -31,11 +31,27 @@ const getAllProducts = async (req, res) => {
             prevLink: prevLink,
             nextLink: nextLink
         };
-        console.log(result);
-        const userFromDB = await User.findById(user._id);
-        const isAdmin = userFromDB.role === 'admin';
-        const isAdminFalse = !isAdmin;
-        res.render('product', { products, user: userFromDB, isAdmin, isAdminFalse });
+        if (user) {
+            const userFromDB = await User.findById(user._id);
+            const isAdmin = userFromDB.role === 'admin';
+            const isPremium = userFromDB.role === 'premium';
+            const isUser = userFromDB.role === 'user';
+            let isAdminFalse = false;
+            let isPremiumFalse = false;
+            let isUserFalse = false;
+            if (!isAdmin) {
+                isAdminFalse = true;
+            }
+            if (!isPremium) {
+                isPremiumFalse = true;
+            }
+            if (!isUser) {
+                isUserFalse = true;
+            }
+            res.render('product', { products, user: userFromDB, isAdmin, isAdminFalse, isPremium, isPremiumFalse, isUser, isUserFalse });
+        } else {
+            res.render('product', { products });
+        }
     } catch (error) {
         logger.error(error);
         console.log(error);
@@ -57,33 +73,47 @@ const getProductById = async (req, res) => {
     }
 };
 
+const getItemDetail = async (req, res) => {
+    try {
+        const productId = req.params.pid;
+        const product = await Product.findById(productId);
+        
+        if (product) {
+            res.render('itemDetail', { product });
+        } else {
+            res.status(404).json({ status: "error", message: customizeError('PRODUCT_NOT_FOUND') });
+        }
+    } catch (error) {
+        res.status(500).json({ status: "error", message: customizeError('INTERNAL_SERVER_ERROR') });
+    }
+};
+
 const createProduct = async (req, res) => {
     try {
+        const ownerId = req.user._id;
         const { title, description, code, price, stock, category, thumbnails } = req.body;
         if (!title || !description || !code || !price || !stock || !category) {
             return res.status(400).json({ status: "error", message: customizeError('MISSING_FIELDS') });
         }
-        const user = req.user;
-        const userFromDB = await User.findById(user._id);
-        if (userFromDB.role === 'premium' || userFromDB.role === 'admin') {
-            const productData = {
-                title,
-                description,  
-                code,
-                price,
-                stock,
-                status: true,
-                category,
-                thumbnails,
-                owner: user.email 
-            };
-            const newProduct = await Product.create(productData);
-            const io = req.app.get("io");
-            io.emit("productAdded", newProduct);
-            return res.redirect('/products');
-        } else {
-            return res.status(403).json({ status: "error", message: "No está autorizado para crear productos" });
-        }
+
+        const productData = {
+            title,
+            description,
+            code,
+            price,
+            stock,
+            status: true,
+            category,
+            thumbnails,
+            owner: ownerId,
+        };
+
+        const newProduct = await Product.create(productData);
+        const io = req.app.get("io");
+        io.emit("productAdded", newProduct);
+        setTimeout(() => {
+            res.redirect('/products');
+        }, 1000);
     } catch (error) {
         res.status(500).json({ status: "error", message: customizeError('INTERNAL_SERVER_ERROR') });
     }
@@ -136,5 +166,6 @@ module.exports = {
     getProductById,
     createProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    getItemDetail
 };
