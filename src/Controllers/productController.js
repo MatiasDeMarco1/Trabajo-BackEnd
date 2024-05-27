@@ -142,22 +142,25 @@ const updateProduct = async (req, res) => {
 };
 
 const deleteProduct = async (req, res) => {
-    const { user } = req;
-    const { pid } = req.params;
     try {
-        const product = await Product.findById(pid);
+        const productId = req.params.pid;
+        const product = await Product.findById(productId);
         if (!product) {
-            return res.status(404).json({ message: 'Producto no encontrado' });
+            return res.status(404).json({ status: "error", message: customizeError('PRODUCT_NOT_FOUND') });
         }
-        if (user.role === 'admin' || product.owner.equals(user._id)) {
-            await product.remove();
-            return res.status(200).json({ message: 'Producto eliminado correctamente' });
-        } else {
-            return res.status(403).json({ message: 'No tienes permiso para eliminar este producto' });
+        const ownerId = product.owner;
+        const user = await User.findById(ownerId);
+        if (!user) {
+            return res.status(404).json({ status: "error", message: customizeError('USER_NOT_FOUND') });
         }
+        const io = req.app.get("io");
+        io.emit("productDeleted", productId);
+        const ownerEmail = user.email;
+        await Product.findByIdAndDelete(productId);
+        res.status(200).json({ status: "success", message: "Producto eliminado correctamente" });
     } catch (error) {
         console.error('Error al eliminar el producto:', error);
-        return res.status(500).json({ message: 'Error interno del servidor' });
+        res.status(500).json({ status: "error", message: customizeError('INTERNAL_SERVER_ERROR') });
     }
 };
 
