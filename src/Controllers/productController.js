@@ -155,7 +155,6 @@ const deleteProduct = async (req, res) => {
         }
         const io = req.app.get("io");
         io.emit("productDeleted", productId);
-        const ownerEmail = user.email;
         await Product.findByIdAndDelete(productId);
         res.status(200).json({ status: "success", message: "Producto eliminado correctamente" });
     } catch (error) {
